@@ -1,0 +1,75 @@
+{
+  "name": "@kirbic/openapi-types.ts",
+  "version": "1.0.0",
+  "author": "Marc Pomar (marc@corecode.school)",
+  "license": "MIT",
+  "repository": "github:kirbic/openapi-types.ts",
+  "main": "generated/types.js",
+  "types": "generated/types.ts",
+  "scripts": {
+    "build": "pika build",
+    "fetch": "ts-node scripts/fetch.ts",
+    "generate-types": "npx openapi-typescript cache/schema.json -o src/generated/types.ts",
+    "release": "npx semantic-release"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "fs-extra": "^9.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  },
+  "devDependencies": {
+    "@pika/pack": "^0.5.0",
+    "@pika/plugin-build-node": "^0.9.2",
+    "@pika/plugin-build-web": "^0.9.2",
+    "@pika/plugin-ts-standard-pkg": "^0.9.2",
+    "@types/fs-extra": "^9.0.8",
+    "pika-plugin-merge-properties": "^1.0.6",
+    "semantic-release-plugin-update-version-in-files": "^1.1.0"
+  },
+  "@pika/pack": {
+    "pipeline": [
+      [
+        "@pika/plugin-ts-standard-pkg"
+      ],
+      [
+        "pika-plugin-merge-properties",
+        {
+          "properties": {
+            "octokit": "see https://github.com/jabuco/pika-plugin-merge-properties/issues/2"
+          }
+        }
+      ],
+      [
+        "@pika/plugin-build-node"
+      ],
+      [
+        "@pika/plugin-build-web"
+      ]
+    ]
+  },
+  "release": {
+    "branches": "master",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github",
+      [
+        "@semantic-release/npm",
+        {
+          "pkgRoot": "./pkg"
+        }
+      ],
+      [
+        "semantic-release-plugin-update-version-in-files",
+        {
+          "files": [
+            "pkg/dist-web/*",
+            "pkg/dist-node/*",
+            "pkg/*/version.*"
+          ]
+        }
+      ]
+    ]
+  }
+}

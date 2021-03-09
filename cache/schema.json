@@ -1,0 +1,3868 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Kirbic API",
+    "description": "Kibic ecommerce api",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://kirbic.eu.auth0.com/authorize",
+            "tokenUrl": "https://kirbic.eu.auth0.com/oauth/token",
+            "refreshUrl": "https://kirbic.eu.auth0.com/authorize",
+            "scopes": {
+              "user:read": "bla-ble"
+            }
+          }
+        }
+      },
+      "cookie_session": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "kirbic_session"
+      }
+    },
+    "schemas": {
+      "def-0": {
+        "title": "Collection Create",
+        "description": "create a collection schema",
+        "type": "object",
+        "required": [
+          "name",
+          "tags"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3
+          },
+          "description": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-1": {
+        "title": "Collection Response",
+        "description": "collection of products",
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "https://api.kirbic.com/schemas/api-catalog/collection"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "def-2": {
+        "title": "Collection",
+        "description": "collection of products",
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "tags"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-3": {
+        "type": "object",
+        "title": "Price Create",
+        "description": "create a price for a product",
+        "required": [
+          "currency",
+          "unit_amount",
+          "unit_type",
+          "active",
+          "metadata"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "currency": {
+            "$ref": "https://api.kirbic.com/schemas/api-catalog/price#/definitions/currency"
+          },
+          "unit_amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit_type": {
+            "$ref": "https://api.kirbic.com/schemas/api-catalog/price#/definitions/unit"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-4": {
+        "type": "object",
+        "title": "Price Update",
+        "description": "update a price object",
+        "required": [
+          "_id"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "currency": {
+            "$ref": "https://api.kirbic.com/schemas/api-catalog/price#/definitions/currency"
+          },
+          "unit_amount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit_type": {
+            "$ref": "https://api.kirbic.com/schemas/api-catalog/price#/definitions/unit"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-5": {
+        "title": "Price",
+        "description": "A price associated with a product",
+        "type": "object",
+        "required": [
+          "id",
+          "currency",
+          "unit_type",
+          "unit_amount",
+          "active",
+          "product_id"
+        ],
+        "definitions": {
+          "currency": {
+            "title": "Currency",
+            "description": "currency",
+            "type": "string",
+            "enum": [
+              "EUR",
+              "USD"
+            ]
+          },
+          "unit": {
+            "title": "Unit type",
+            "description": "unit",
+            "type": "string",
+            "enum": [
+              "pallet",
+              "box",
+              "units",
+              "item",
+              "pack"
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "description": "currency",
+            "type": "string",
+            "enum": [
+              "EUR",
+              "USD"
+            ]
+          },
+          "unit_type": {
+            "title": "Unit type",
+            "description": "unit",
+            "type": "string",
+            "enum": [
+              "pallet",
+              "box",
+              "units",
+              "item",
+              "pack"
+            ]
+          },
+          "unit_amount": {
+            "type": "number"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-6": {
+        "title": "Product Create",
+        "description": "create a product",
+        "type": "object",
+        "required": [
+          "name",
+          "prices"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "description_short": {
+            "type": "string"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "https://api.kirbic.com/schemas/api-catalog/price_create"
+            }
+          },
+          "vendor": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-7": {
+        "title": "Products filter request",
+        "description": "get products list",
+        "type": "object",
+        "properties": {
+          "collection_slug": {
+            "type": "string",
+            "description": "a collection slug"
+          },
+          "collection_id": {
+            "type": "string",
+            "description": "a collection identifier"
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-8": {
+        "title": "Produt Response",
+        "description": "collection of products",
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "https://api.kirbic.com/schemas/api-catalog/product"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "collection": {
+                "$ref": "https://api.kirbic.com/schemas/api-catalog/collection"
+              }
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "def-9": {
+        "title": "Product Update",
+        "description": "update a product",
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "description_short": {
+            "type": "string"
+          },
+          "vendor": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "def-10": {
+        "title": "Product",
+        "description": "a product in the dashboard",
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "prices",
+          "description",
+          "description_short",
+          "tags",
+          "active"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "description_short": {
+            "type": "string"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "title": "Price",
+              "description": "A price associated with a product",
+              "type": "object",
+              "required": [
+                "id",
+                "currency",
+                "unit_type",
+                "unit_amount",
+                "active",
+                "product_id"
+              ],
+              "definitions": {
+                "currency": {
+                  "title": "Currency",
+                  "description": "currency",
+                  "type": "string",
+                  "enum": [
+                    "EUR",
+                    "USD"
+                  ]
+                },
+                "unit": {
+                  "title": "Unit type",
+                  "description": "unit",
+                  "type": "string",
+                  "enum": [
+                    "pallet",
+                    "box",
+                    "units",
+                    "item",
+                    "pack"
+                  ]
+                }
+              },
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "currency": {
+                  "title": "Currency",
+                  "description": "currency",
+                  "type": "string",
+                  "enum": [
+                    "EUR",
+                    "USD"
+                  ]
+                },
+                "unit_type": {
+                  "title": "Unit type",
+                  "description": "unit",
+                  "type": "string",
+                  "enum": [
+                    "pallet",
+                    "box",
+                    "units",
+                    "item",
+                    "pack"
+                  ]
+                },
+                "unit_amount": {
+                  "type": "number"
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "vendor": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-11": {
+        "title": "Helpdesk Create",
+        "description": "create a helpdesk ticket",
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "desk_type",
+          "fields"
+        ],
+        "examples": [
+          {
+            "name": "User requesting more info",
+            "summary": "Example of a user requesting more info about shop",
+            "value": {
+              "desk_type": "your-registered-helpdesk-type",
+              "name": "your-registered-helpdesk-type",
+              "email": "example@kirbic.com",
+              "fields": {
+                "field_one": "value_one",
+                "field_two": "value_two"
+              },
+              "metadata": {
+                "your_custom_metadata_key": "custom_metadata_value"
+              }
+            }
+          }
+        ],
+        "properties": {
+          "desk_type": {
+            "type": "string",
+            "description": "registered kirbic desktype"
+          },
+          "name": {
+            "type": "string",
+            "description": "some sort of user identifer"
+          },
+          "email": {
+            "type": "string",
+            "description": "user email"
+          },
+          "fields": {
+            "$ref": "https://api.kirbic.com/schemas/api-helpdesk/helpdesk_fields"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "def-12": {
+        "title": "Helpdesk fields",
+        "description": "Helpdesk fields",
+        "type": "object",
+        "additionalProperties": {
+          "title": "Helpdesk Field",
+          "description": "Helpdesk single field",
+          "type": "object",
+          "required": [
+            "label",
+            "value"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "def-13": {
+        "title": "Helpdesk Field",
+        "description": "Helpdesk single field",
+        "type": "object",
+        "required": [
+          "label",
+          "value"
+        ],
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "def-14": {
+        "title": "Address",
+        "description": "an address of a user",
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "line_1",
+          "zip_code",
+          "city",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Address unique identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nombre y apellidos"
+          },
+          "line_1": {
+            "type": "string",
+            "description": "primera línea de la dirección"
+          },
+          "line_2": {
+            "type": "string",
+            "description": "segunda línea de la dirección"
+          },
+          "city": {
+            "type": "string",
+            "description": "Ciudad"
+          },
+          "state": {
+            "type": "string",
+            "description": "Província o región"
+          },
+          "zip_code": {
+            "type": "string",
+            "description": "codigo postal"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "se puede usar para ayudar con la entrega"
+          },
+          "deliver_instructions": {
+            "type": "string",
+            "description": "detalles para ayudar con la entrega"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/internal/database": {
+      "get": {
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/healtz": {
+      "get": {
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/shop/": {
+      "get": {
+        "summary": "Shop details",
+        "tags": [
+          "shop"
+        ],
+        "description": "Info about shop in **x-shopcopter-shop** header",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/shop/all": {
+      "get": {
+        "summary": "List all shops owned by the current user",
+        "tags": [
+          "shop"
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/shop/create": {
+      "post": {
+        "summary": "Create a new shop instance",
+        "tags": [
+          "shop"
+        ],
+        "description": "Use this method to create a new shop instance. See [pricing](https://docs.kirbic.com/pricing) for more info.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$id": "todo.com",
+                "title": "Shop Create",
+                "type": "object",
+                "required": [
+                  "name",
+                  "site_url"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "site_url": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "brandy_id": {
+                    "type": "string"
+                  },
+                  "admin_email": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/catalog/product/": {
+      "get": {
+        "summary": "Get all products in the specified shop",
+        "tags": [
+          "product"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "collection_slug",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "a collection slug"
+            }
+          },
+          {
+            "in": "query",
+            "name": "collection_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "a collection identifier"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "collection of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Produt Response",
+                  "description": "collection of products",
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "title": "Product",
+                        "description": "a product in the dashboard",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name",
+                          "slug",
+                          "prices",
+                          "description",
+                          "description_short",
+                          "tags",
+                          "active"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "description_short": {
+                            "type": "string"
+                          },
+                          "prices": {
+                            "type": "array",
+                            "items": {
+                              "title": "Price",
+                              "description": "A price associated with a product",
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "currency",
+                                "unit_type",
+                                "unit_amount",
+                                "active",
+                                "product_id"
+                              ],
+                              "definitions": {
+                                "currency": {
+                                  "title": "Currency",
+                                  "description": "currency",
+                                  "type": "string",
+                                  "enum": [
+                                    "EUR",
+                                    "USD"
+                                  ]
+                                },
+                                "unit": {
+                                  "title": "Unit type",
+                                  "description": "unit",
+                                  "type": "string",
+                                  "enum": [
+                                    "pallet",
+                                    "box",
+                                    "units",
+                                    "item",
+                                    "pack"
+                                  ]
+                                }
+                              },
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "currency": {
+                                  "title": "Currency",
+                                  "description": "currency",
+                                  "type": "string",
+                                  "enum": [
+                                    "EUR",
+                                    "USD"
+                                  ]
+                                },
+                                "unit_type": {
+                                  "title": "Unit type",
+                                  "description": "unit",
+                                  "type": "string",
+                                  "enum": [
+                                    "pallet",
+                                    "box",
+                                    "units",
+                                    "item",
+                                    "pack"
+                                  ]
+                                },
+                                "unit_amount": {
+                                  "type": "number"
+                                },
+                                "active": {
+                                  "type": "boolean"
+                                },
+                                "product_id": {
+                                  "type": "string"
+                                },
+                                "metadata": {
+                                  "type": "object"
+                                }
+                              },
+                              "additionalProperties": false
+                            }
+                          },
+                          "vendor": {
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "metadata": {
+                            "type": "object"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "collection": {
+                          "title": "Collection",
+                          "description": "collection of products",
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "slug",
+                            "name",
+                            "description",
+                            "tags"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "slug": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "tags": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a product",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$id": "todo.com",
+                "title": "Product Create",
+                "description": "create a product",
+                "type": "object",
+                "required": [
+                  "name",
+                  "prices"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "description_short": {
+                    "type": "string"
+                  },
+                  "prices": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/def-3"
+                    }
+                  },
+                  "vendor": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a product in the dashboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Product",
+                  "description": "a product in the dashboard",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "prices",
+                    "description",
+                    "description_short",
+                    "tags",
+                    "active"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "description_short": {
+                      "type": "string"
+                    },
+                    "prices": {
+                      "type": "array",
+                      "items": {
+                        "title": "Price",
+                        "description": "A price associated with a product",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "currency",
+                          "unit_type",
+                          "unit_amount",
+                          "active",
+                          "product_id"
+                        ],
+                        "definitions": {
+                          "currency": {
+                            "title": "Currency",
+                            "description": "currency",
+                            "type": "string",
+                            "enum": [
+                              "EUR",
+                              "USD"
+                            ]
+                          },
+                          "unit": {
+                            "title": "Unit type",
+                            "description": "unit",
+                            "type": "string",
+                            "enum": [
+                              "pallet",
+                              "box",
+                              "units",
+                              "item",
+                              "pack"
+                            ]
+                          }
+                        },
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "currency": {
+                            "title": "Currency",
+                            "description": "currency",
+                            "type": "string",
+                            "enum": [
+                              "EUR",
+                              "USD"
+                            ]
+                          },
+                          "unit_type": {
+                            "title": "Unit type",
+                            "description": "unit",
+                            "type": "string",
+                            "enum": [
+                              "pallet",
+                              "box",
+                              "units",
+                              "item",
+                              "pack"
+                            ]
+                          },
+                          "unit_amount": {
+                            "type": "number"
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "product_id": {
+                            "type": "string"
+                          },
+                          "metadata": {
+                            "type": "object"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "vendor": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/product/{product_id_or_slug}": {
+      "get": {
+        "summary": "Get a product using it's id or it's slug",
+        "tags": [
+          "product"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id_or_slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a product in the dashboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Product",
+                  "description": "a product in the dashboard",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "prices",
+                    "description",
+                    "description_short",
+                    "tags",
+                    "active"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "description_short": {
+                      "type": "string"
+                    },
+                    "prices": {
+                      "type": "array",
+                      "items": {
+                        "title": "Price",
+                        "description": "A price associated with a product",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "currency",
+                          "unit_type",
+                          "unit_amount",
+                          "active",
+                          "product_id"
+                        ],
+                        "definitions": {
+                          "currency": {
+                            "title": "Currency",
+                            "description": "currency",
+                            "type": "string",
+                            "enum": [
+                              "EUR",
+                              "USD"
+                            ]
+                          },
+                          "unit": {
+                            "title": "Unit type",
+                            "description": "unit",
+                            "type": "string",
+                            "enum": [
+                              "pallet",
+                              "box",
+                              "units",
+                              "item",
+                              "pack"
+                            ]
+                          }
+                        },
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "currency": {
+                            "title": "Currency",
+                            "description": "currency",
+                            "type": "string",
+                            "enum": [
+                              "EUR",
+                              "USD"
+                            ]
+                          },
+                          "unit_type": {
+                            "title": "Unit type",
+                            "description": "unit",
+                            "type": "string",
+                            "enum": [
+                              "pallet",
+                              "box",
+                              "units",
+                              "item",
+                              "pack"
+                            ]
+                          },
+                          "unit_amount": {
+                            "type": "number"
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "product_id": {
+                            "type": "string"
+                          },
+                          "metadata": {
+                            "type": "object"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "vendor": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/product/{product_id}": {
+      "delete": {
+        "summary": "delete a product and it's prices",
+        "tags": [
+          "product"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Update a product",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$id": "todo.com",
+                "title": "Product Update",
+                "description": "update a product",
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "description_short": {
+                    "type": "string"
+                  },
+                  "vendor": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/catalog/price/{product_id}": {
+      "post": {
+        "tags": [
+          "product"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/catalog/collection/": {
+      "get": {
+        "summary": "Get all collections",
+        "tags": [
+          "collection"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "collection of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Collection Response",
+                  "description": "collection of products",
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$id": "https://api.kirbic.com/schemas/api-catalog/collection",
+                        "title": "Collection",
+                        "description": "collection of products",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "description",
+                          "tags"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a collection",
+        "tags": [
+          "collection"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$id": "todo.com",
+                "title": "Collection Create",
+                "description": "create a collection schema",
+                "type": "object",
+                "required": [
+                  "name",
+                  "tags"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 3
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "collection of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Collection",
+                  "description": "collection of products",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "description",
+                    "tags"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/collection/tags": {
+      "get": {
+        "summary": "Search collections by tag",
+        "tags": [
+          "collection"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "collection of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Collection Response",
+                  "description": "collection of products",
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$id": "https://api.kirbic.com/schemas/api-catalog/collection",
+                        "title": "Collection",
+                        "description": "collection of products",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "description",
+                          "tags"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/collection/{collection_id}": {
+      "delete": {
+        "summary": "Delete a collection",
+        "tags": [
+          "collection"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/media/upload": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/cart/": {
+      "get": {
+        "summary": "Get the user shopping cart",
+        "tags": [
+          "cart"
+        ],
+        "description": "Get the user shopping cart for this specific shop and user",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a cart in kirbic",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "type": "object",
+                  "title": "Cart",
+                  "description": "a cart in kirbic",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "shop_id": {
+                      "type": "string"
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "Cart Line",
+                        "additionalProperties": false,
+                        "description": "a cart line",
+                        "$id": "cart_line",
+                        "properties": {
+                          "price": {
+                            "$id": "https://api.kirbic.com/schemas/api-catalog/price",
+                            "title": "Price",
+                            "description": "A price associated with a product",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "currency",
+                              "unit_type",
+                              "unit_amount",
+                              "active",
+                              "product_id"
+                            ],
+                            "definitions": {
+                              "currency": {
+                                "title": "Currency",
+                                "description": "currency",
+                                "type": "string",
+                                "enum": [
+                                  "EUR",
+                                  "USD"
+                                ]
+                              },
+                              "unit": {
+                                "title": "Unit type",
+                                "description": "unit",
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "box",
+                                  "units",
+                                  "item",
+                                  "pack"
+                                ]
+                              }
+                            },
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "currency": {
+                                "title": "Currency",
+                                "description": "currency",
+                                "type": "string",
+                                "enum": [
+                                  "EUR",
+                                  "USD"
+                                ]
+                              },
+                              "unit_type": {
+                                "title": "Unit type",
+                                "description": "unit",
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "box",
+                                  "units",
+                                  "item",
+                                  "pack"
+                                ]
+                              },
+                              "unit_amount": {
+                                "type": "number"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "product_id": {
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "type": "object"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "product": {
+                            "$id": "https://api.kirbic.com/schemas/api-catalog/product",
+                            "title": "Product",
+                            "description": "a product in the dashboard",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "prices",
+                              "description",
+                              "description_short",
+                              "tags",
+                              "active"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "description_short": {
+                                "type": "string"
+                              },
+                              "prices": {
+                                "type": "array",
+                                "items": {
+                                  "$id": "https://api.kirbic.com/schemas/api-catalog/price",
+                                  "title": "Price",
+                                  "description": "A price associated with a product",
+                                  "type": "object",
+                                  "required": [
+                                    "id",
+                                    "currency",
+                                    "unit_type",
+                                    "unit_amount",
+                                    "active",
+                                    "product_id"
+                                  ],
+                                  "definitions": {
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "currency",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit": {
+                                      "title": "Unit type",
+                                      "description": "unit",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    }
+                                  },
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "currency",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit_type": {
+                                      "title": "Unit type",
+                                      "description": "unit",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    },
+                                    "unit_amount": {
+                                      "type": "number"
+                                    },
+                                    "active": {
+                                      "type": "boolean"
+                                    },
+                                    "product_id": {
+                                      "type": "string"
+                                    },
+                                    "metadata": {
+                                      "type": "object"
+                                    }
+                                  },
+                                  "additionalProperties": false
+                                }
+                              },
+                              "vendor": {
+                                "type": "string"
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "metadata": {
+                                "type": "object"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "quantity": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "price",
+                          "product",
+                          "quantity"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "shop_id",
+                    "lines",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Empty the current cart",
+        "tags": [
+          "cart"
+        ],
+        "description": "Empty the current cart",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/cart/{price_id}": {
+      "patch": {
+        "summary": "Add, update or remove a price_id",
+        "tags": [
+          "cart"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "title": "Cart Line Action",
+                "description": "\nAdd, remove, update lines from kirbic cart\n\nOperation modes:\n- `add` adds a price to the cart in specified `quantity`. \n    * If `price_id` is already in cart, `quantity` is added to actual value.\n    * If `price_id` is not already in cart `quantity` is setted.\n    * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`\n- `remove` removes a price from the cart in specified `quantity`.\n    * If `price` is already in cart, `quantity` is removed to actual value.\n    * If `price` is not already in cart `quantity` is setted.\n    * If total quantity of 0 is reached `price_id` is deleted from actual cart.\n    * Throws an error if total quantity is less than `rule:min_quantity_in_cart`\n- `set` sets the total quantity for this `price_id`. Creates it if not exists.\n- `delete` deletesthe `price_id` line from the cart. `quantity` is ignored\n",
+                "additionalProperties": false,
+                "properties": {
+                  "quantity": {
+                    "default": 1,
+                    "description": "quantity to add, or remove",
+                    "type": "number"
+                  },
+                  "mode": {
+                    "description": "operation mode",
+                    "default": "add",
+                    "enum": [
+                      "add",
+                      "remove",
+                      "set",
+                      "delete"
+                    ]
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "price_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a cart in kirbic",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "type": "object",
+                  "title": "Cart",
+                  "description": "a cart in kirbic",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "shop_id": {
+                      "type": "string"
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "Cart Line",
+                        "additionalProperties": false,
+                        "description": "a cart line",
+                        "$id": "cart_line",
+                        "properties": {
+                          "price": {
+                            "$id": "https://api.kirbic.com/schemas/api-catalog/price",
+                            "title": "Price",
+                            "description": "A price associated with a product",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "currency",
+                              "unit_type",
+                              "unit_amount",
+                              "active",
+                              "product_id"
+                            ],
+                            "definitions": {
+                              "currency": {
+                                "title": "Currency",
+                                "description": "currency",
+                                "type": "string",
+                                "enum": [
+                                  "EUR",
+                                  "USD"
+                                ]
+                              },
+                              "unit": {
+                                "title": "Unit type",
+                                "description": "unit",
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "box",
+                                  "units",
+                                  "item",
+                                  "pack"
+                                ]
+                              }
+                            },
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "currency": {
+                                "title": "Currency",
+                                "description": "currency",
+                                "type": "string",
+                                "enum": [
+                                  "EUR",
+                                  "USD"
+                                ]
+                              },
+                              "unit_type": {
+                                "title": "Unit type",
+                                "description": "unit",
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "box",
+                                  "units",
+                                  "item",
+                                  "pack"
+                                ]
+                              },
+                              "unit_amount": {
+                                "type": "number"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "product_id": {
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "type": "object"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "product": {
+                            "$id": "https://api.kirbic.com/schemas/api-catalog/product",
+                            "title": "Product",
+                            "description": "a product in the dashboard",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "prices",
+                              "description",
+                              "description_short",
+                              "tags",
+                              "active"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "description_short": {
+                                "type": "string"
+                              },
+                              "prices": {
+                                "type": "array",
+                                "items": {
+                                  "$id": "https://api.kirbic.com/schemas/api-catalog/price",
+                                  "title": "Price",
+                                  "description": "A price associated with a product",
+                                  "type": "object",
+                                  "required": [
+                                    "id",
+                                    "currency",
+                                    "unit_type",
+                                    "unit_amount",
+                                    "active",
+                                    "product_id"
+                                  ],
+                                  "definitions": {
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "currency",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit": {
+                                      "title": "Unit type",
+                                      "description": "unit",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    }
+                                  },
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "currency",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit_type": {
+                                      "title": "Unit type",
+                                      "description": "unit",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    },
+                                    "unit_amount": {
+                                      "type": "number"
+                                    },
+                                    "active": {
+                                      "type": "boolean"
+                                    },
+                                    "product_id": {
+                                      "type": "string"
+                                    },
+                                    "metadata": {
+                                      "type": "object"
+                                    }
+                                  },
+                                  "additionalProperties": false
+                                }
+                              },
+                              "vendor": {
+                                "type": "string"
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "metadata": {
+                                "type": "object"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "quantity": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "price",
+                          "product",
+                          "quantity"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "shop_id",
+                    "lines",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart/metadata": {
+      "post": {
+        "summary": "Set metadata on cart",
+        "tags": [
+          "cart"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a cart in kirbic",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "type": "object",
+                  "title": "Cart",
+                  "description": "a cart in kirbic",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "shop_id": {
+                      "type": "string"
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "Cart Line",
+                        "additionalProperties": false,
+                        "description": "a cart line",
+                        "$id": "cart_line",
+                        "properties": {
+                          "price": {
+                            "$id": "https://api.kirbic.com/schemas/api-catalog/price",
+                            "title": "Price",
+                            "description": "A price associated with a product",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "currency",
+                              "unit_type",
+                              "unit_amount",
+                              "active",
+                              "product_id"
+                            ],
+                            "definitions": {
+                              "currency": {
+                                "title": "Currency",
+                                "description": "currency",
+                                "type": "string",
+                                "enum": [
+                                  "EUR",
+                                  "USD"
+                                ]
+                              },
+                              "unit": {
+                                "title": "Unit type",
+                                "description": "unit",
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "box",
+                                  "units",
+                                  "item",
+                                  "pack"
+                                ]
+                              }
+                            },
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "currency": {
+                                "title": "Currency",
+                                "description": "currency",
+                                "type": "string",
+                                "enum": [
+                                  "EUR",
+                                  "USD"
+                                ]
+                              },
+                              "unit_type": {
+                                "title": "Unit type",
+                                "description": "unit",
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "box",
+                                  "units",
+                                  "item",
+                                  "pack"
+                                ]
+                              },
+                              "unit_amount": {
+                                "type": "number"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "product_id": {
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "type": "object"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "product": {
+                            "$id": "https://api.kirbic.com/schemas/api-catalog/product",
+                            "title": "Product",
+                            "description": "a product in the dashboard",
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "prices",
+                              "description",
+                              "description_short",
+                              "tags",
+                              "active"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "description_short": {
+                                "type": "string"
+                              },
+                              "prices": {
+                                "type": "array",
+                                "items": {
+                                  "$id": "https://api.kirbic.com/schemas/api-catalog/price",
+                                  "title": "Price",
+                                  "description": "A price associated with a product",
+                                  "type": "object",
+                                  "required": [
+                                    "id",
+                                    "currency",
+                                    "unit_type",
+                                    "unit_amount",
+                                    "active",
+                                    "product_id"
+                                  ],
+                                  "definitions": {
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "currency",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit": {
+                                      "title": "Unit type",
+                                      "description": "unit",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    }
+                                  },
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "currency",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit_type": {
+                                      "title": "Unit type",
+                                      "description": "unit",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    },
+                                    "unit_amount": {
+                                      "type": "number"
+                                    },
+                                    "active": {
+                                      "type": "boolean"
+                                    },
+                                    "product_id": {
+                                      "type": "string"
+                                    },
+                                    "metadata": {
+                                      "type": "object"
+                                    }
+                                  },
+                                  "additionalProperties": false
+                                }
+                              },
+                              "vendor": {
+                                "type": "string"
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "metadata": {
+                                "type": "object"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "quantity": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "price",
+                          "product",
+                          "quantity"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "shop_id",
+                    "lines",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payment/add-payment": {
+      "post": {
+        "tags": [
+          "payment"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/order/": {
+      "post": {
+        "summary": "Place an order",
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      },
+      "get": {
+        "summary": "List your orders",
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/order/delete_all_orders": {
+      "delete": {
+        "summary": "Delete all orders",
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/helpdesk/": {
+      "post": {
+        "summary": "Create a helpdesk event",
+        "tags": [
+          "helpdesk"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$id": "todo.com",
+                "title": "Helpdesk Create",
+                "description": "create a helpdesk ticket",
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "desk_type",
+                  "fields"
+                ],
+                "examples": [
+                  {
+                    "name": "User requesting more info",
+                    "summary": "Example of a user requesting more info about shop",
+                    "value": {
+                      "desk_type": "your-registered-helpdesk-type",
+                      "name": "your-registered-helpdesk-type",
+                      "email": "example@kirbic.com",
+                      "fields": {
+                        "field_one": "value_one",
+                        "field_two": "value_two"
+                      },
+                      "metadata": {
+                        "your_custom_metadata_key": "custom_metadata_value"
+                      }
+                    }
+                  }
+                ],
+                "properties": {
+                  "desk_type": {
+                    "type": "string",
+                    "description": "registered kirbic desktype"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "some sort of user identifer"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "user email"
+                  },
+                  "fields": {
+                    "$ref": "#/components/schemas/def-12"
+                  },
+                  "metadata": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Helpdesk ticket created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Helpdesk ticket created",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/": {
+      "get": {
+        "summary": "Get all addresses for the current user",
+        "tags": [
+          "address"
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Address Response",
+                  "description": "Address Response",
+                  "type": "object",
+                  "definitions": {
+                    "address": {
+                      "$ref": "#/components/schemas/def-14"
+                    }
+                  },
+                  "required": [
+                    "addresses",
+                    "default_billing",
+                    "default_delivery"
+                  ],
+                  "properties": {
+                    "addresses": {
+                      "type": "array",
+                      "items": {
+                        "title": "Address",
+                        "description": "an address of a user",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name",
+                          "line_1",
+                          "zip_code",
+                          "city",
+                          "state"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Address unique identifier"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Nombre y apellidos"
+                          },
+                          "line_1": {
+                            "type": "string",
+                            "description": "primera línea de la dirección"
+                          },
+                          "line_2": {
+                            "type": "string",
+                            "description": "segunda línea de la dirección"
+                          },
+                          "city": {
+                            "type": "string",
+                            "description": "Ciudad"
+                          },
+                          "state": {
+                            "type": "string",
+                            "description": "Província o región"
+                          },
+                          "zip_code": {
+                            "type": "string",
+                            "description": "codigo postal"
+                          },
+                          "phone_number": {
+                            "type": "string",
+                            "description": "se puede usar para ayudar con la entrega"
+                          },
+                          "deliver_instructions": {
+                            "type": "string",
+                            "description": "detalles para ayudar con la entrega"
+                          }
+                        }
+                      },
+                      "default": []
+                    },
+                    "default_billing": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "title": "Address",
+                          "description": "an address of a user",
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "zip_code",
+                            "city",
+                            "state"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Address unique identifier"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Nombre y apellidos"
+                            },
+                            "line_1": {
+                              "type": "string",
+                              "description": "primera línea de la dirección"
+                            },
+                            "line_2": {
+                              "type": "string",
+                              "description": "segunda línea de la dirección"
+                            },
+                            "city": {
+                              "type": "string",
+                              "description": "Ciudad"
+                            },
+                            "state": {
+                              "type": "string",
+                              "description": "Província o región"
+                            },
+                            "zip_code": {
+                              "type": "string",
+                              "description": "codigo postal"
+                            },
+                            "phone_number": {
+                              "type": "string",
+                              "description": "se puede usar para ayudar con la entrega"
+                            },
+                            "deliver_instructions": {
+                              "type": "string",
+                              "description": "detalles para ayudar con la entrega"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "default_delivery": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "title": "Address",
+                          "description": "an address of a user",
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "zip_code",
+                            "city",
+                            "state"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Address unique identifier"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Nombre y apellidos"
+                            },
+                            "line_1": {
+                              "type": "string",
+                              "description": "primera línea de la dirección"
+                            },
+                            "line_2": {
+                              "type": "string",
+                              "description": "segunda línea de la dirección"
+                            },
+                            "city": {
+                              "type": "string",
+                              "description": "Ciudad"
+                            },
+                            "state": {
+                              "type": "string",
+                              "description": "Província o región"
+                            },
+                            "zip_code": {
+                              "type": "string",
+                              "description": "codigo postal"
+                            },
+                            "phone_number": {
+                              "type": "string",
+                              "description": "se puede usar para ayudar con la entrega"
+                            },
+                            "deliver_instructions": {
+                              "type": "string",
+                              "description": "detalles para ayudar con la entrega"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new address",
+        "tags": [
+          "address"
+        ],
+        "description": "Create an address for the current user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$id": "todo.com",
+                "title": "Address Create",
+                "description": "create an address",
+                "type": "object",
+                "examples": [
+                  {
+                    "name": "An address object",
+                    "summary": "Example of a new address for a user",
+                    "value": {
+                      "name": "Core Code School",
+                      "line_1": "Calle Esteban Terradas, 9",
+                      "zip_code": "28223",
+                      "city": "Madrid",
+                      "state": "Spain"
+                    }
+                  }
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nombre y apellidos"
+                  },
+                  "line_1": {
+                    "type": "string",
+                    "description": "primera línea de la dirección"
+                  },
+                  "line_2": {
+                    "type": "string",
+                    "description": "segunda línea de la dirección"
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "Ciudad"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Província o región"
+                  },
+                  "zip_code": {
+                    "type": "string",
+                    "description": "codigo postal"
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "description": "se puede usar para ayudar con la entrega"
+                  },
+                  "deliver_instructions": {
+                    "type": "string",
+                    "description": "detalles para ayudar con la entrega"
+                  },
+                  "default_billing": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Sets the addres that you are creating as the default_billing address. This is forced to true if it's the first address created"
+                  },
+                  "default_delivery": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Sets the addres that you are creating as the default_delivery address. This is forced to true if it's the first address created"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$id": "todo.com",
+                  "title": "Address Response",
+                  "description": "Address Response",
+                  "type": "object",
+                  "definitions": {
+                    "address": {
+                      "$ref": "#/components/schemas/def-14"
+                    }
+                  },
+                  "required": [
+                    "addresses",
+                    "default_billing",
+                    "default_delivery"
+                  ],
+                  "properties": {
+                    "addresses": {
+                      "type": "array",
+                      "items": {
+                        "title": "Address",
+                        "description": "an address of a user",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name",
+                          "line_1",
+                          "zip_code",
+                          "city",
+                          "state"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Address unique identifier"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Nombre y apellidos"
+                          },
+                          "line_1": {
+                            "type": "string",
+                            "description": "primera línea de la dirección"
+                          },
+                          "line_2": {
+                            "type": "string",
+                            "description": "segunda línea de la dirección"
+                          },
+                          "city": {
+                            "type": "string",
+                            "description": "Ciudad"
+                          },
+                          "state": {
+                            "type": "string",
+                            "description": "Província o región"
+                          },
+                          "zip_code": {
+                            "type": "string",
+                            "description": "codigo postal"
+                          },
+                          "phone_number": {
+                            "type": "string",
+                            "description": "se puede usar para ayudar con la entrega"
+                          },
+                          "deliver_instructions": {
+                            "type": "string",
+                            "description": "detalles para ayudar con la entrega"
+                          }
+                        }
+                      },
+                      "default": []
+                    },
+                    "default_billing": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "title": "Address",
+                          "description": "an address of a user",
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "zip_code",
+                            "city",
+                            "state"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Address unique identifier"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Nombre y apellidos"
+                            },
+                            "line_1": {
+                              "type": "string",
+                              "description": "primera línea de la dirección"
+                            },
+                            "line_2": {
+                              "type": "string",
+                              "description": "segunda línea de la dirección"
+                            },
+                            "city": {
+                              "type": "string",
+                              "description": "Ciudad"
+                            },
+                            "state": {
+                              "type": "string",
+                              "description": "Província o región"
+                            },
+                            "zip_code": {
+                              "type": "string",
+                              "description": "codigo postal"
+                            },
+                            "phone_number": {
+                              "type": "string",
+                              "description": "se puede usar para ayudar con la entrega"
+                            },
+                            "deliver_instructions": {
+                              "type": "string",
+                              "description": "detalles para ayudar con la entrega"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "default_delivery": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "title": "Address",
+                          "description": "an address of a user",
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "zip_code",
+                            "city",
+                            "state"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Address unique identifier"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Nombre y apellidos"
+                            },
+                            "line_1": {
+                              "type": "string",
+                              "description": "primera línea de la dirección"
+                            },
+                            "line_2": {
+                              "type": "string",
+                              "description": "segunda línea de la dirección"
+                            },
+                            "city": {
+                              "type": "string",
+                              "description": "Ciudad"
+                            },
+                            "state": {
+                              "type": "string",
+                              "description": "Província o región"
+                            },
+                            "zip_code": {
+                              "type": "string",
+                              "description": "codigo postal"
+                            },
+                            "phone_number": {
+                              "type": "string",
+                              "description": "se puede usar para ayudar con la entrega"
+                            },
+                            "deliver_instructions": {
+                              "type": "string",
+                              "description": "detalles para ayudar con la entrega"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/{address_id}": {
+      "delete": {
+        "summary": "Delete user address",
+        "tags": [
+          "address"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "address_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/paypal/complete/{session_id}": {
+      "get": {
+        "tags": [
+          "payment"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/paypal/capture": {
+      "post": {
+        "tags": [
+          "payment"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/paypal/session": {
+      "post": {
+        "tags": [
+          "payment"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/stripe/webhook": {
+      "post": {
+        "tags": [
+          "payment",
+          "stripe"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/stripe/get-public-key": {
+      "get": {
+        "tags": [
+          "payment",
+          "stripe"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/stripe/complete/{shop_id}/{session_id}": {
+      "get": {
+        "tags": [
+          "payment",
+          "stripe"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/stripe/register": {
+      "post": {
+        "tags": [
+          "payment",
+          "stripe"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/stripe/unregister": {
+      "get": {
+        "tags": [
+          "payment",
+          "stripe"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/payment/stripe/session": {
+      "post": {
+        "tags": [
+          "payment",
+          "stripe"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": true,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": []
+          },
+          {
+            "cookie_session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "development",
+      "url": "http://localhost:3500"
+    },
+    {
+      "description": "production",
+      "url": "https://api.kirbic.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "helpdesk",
+      "description": "Helpdesk endpoints",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/helpdesk",
+        "description": "Helpdesk Docs"
+      }
+    },
+    {
+      "name": "address",
+      "description": "Addresses of users",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/users",
+        "description": "Users Docs"
+      }
+    },
+    {
+      "name": "cart",
+      "description": "Manage shopcart",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/catalog",
+        "description": "Catalog"
+      }
+    },
+    {
+      "name": "collection",
+      "description": "Manage collections",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/catalog",
+        "description": "Catalog"
+      }
+    },
+    {
+      "name": "product",
+      "description": "Manage products",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/catalog",
+        "description": "Catalog"
+      }
+    },
+    {
+      "name": "shop",
+      "description": "Manage your shop",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/shop",
+        "description": "Shop"
+      }
+    },
+    {
+      "name": "payment",
+      "description": "Make a payment",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/payments",
+        "description": "Payments"
+      }
+    },
+    {
+      "name": "order",
+      "description": "Kirbic Orders",
+      "externalDocs": {
+        "url": "https://docs.kirbic.com/orders",
+        "description": "Orders"
+      }
+    }
+  ],
+  "externalDocs": {
+    "url": "https://docs.kirbic.com",
+    "description": "Find more info here"
+  }
+}
