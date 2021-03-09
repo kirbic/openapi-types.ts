@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Marc Pomar (marc@corecode.school)",
   "license": "MIT",
-  "repository": "github:kirbic/openapi-types.ts",
+  "repository": "git@github.com:kirbic/openapi-types.ts",
   "main": "generated/types.js",
   "types": "generated/types.ts",
   "scripts": {
@@ -49,7 +49,7 @@
     ]
   },
   "release": {
-    "branches": "master",
+    "branches": "main",
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
