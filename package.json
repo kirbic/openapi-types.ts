@@ -1,5 +1,8 @@
 {
   "name": "@kirbic/openapi-types.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "author": "Marc Pomar (marc@corecode.school)",
   "license": "MIT",
