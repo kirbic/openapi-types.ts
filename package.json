@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "author": "Marc Pomar (marc@corecode.school)",
   "license": "MIT",
-  "repository": "git@github.com:kirbic/openapi-types.ts",
+  "repository": "github.com:kirbic/openapi-types.ts",
   "main": "generated/types.js",
   "types": "generated/types.ts",
   "scripts": {
