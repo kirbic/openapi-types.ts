@@ -1,6 +1,6 @@
 {
   "name": "@kirbic/openapi-types.ts",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "author": "Marc Pomar (marc@corecode.school)",
   "license": "MIT",
   "repository": "github.com:kirbic/openapi-types.ts",
