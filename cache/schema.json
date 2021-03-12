@@ -637,36 +637,6 @@
     }
   },
   "paths": {
-    "/": {
-      "get": {
-        "tags": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
-    "/internal/database": {
-      "get": {
-        "tags": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
-    "/healtz": {
-      "get": {
-        "tags": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
     "/shop/": {
       "get": {
         "summary": "Shop details",
@@ -1856,6 +1826,7 @@
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "type": "object",
+                  "$id": "todo.com",
                   "title": "Cart",
                   "description": "a cart in kirbic",
                   "additionalProperties": false,
@@ -1870,10 +1841,10 @@
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "$id": "cart_line",
                         "title": "Cart Line",
                         "additionalProperties": false,
                         "description": "a cart line",
-                        "$id": "cart_line",
                         "properties": {
                           "price": {
                             "$id": "https://api.kirbic.com/schemas/api-catalog/price",
@@ -2149,12 +2120,13 @@
         }
       }
     },
-    "/cart/{price_id}": {
+    "/cart/{mode}/{price_id}": {
       "patch": {
-        "summary": "Add, update or remove a price_id",
+        "summary": "Add, update or remove a price_id from cart",
         "tags": [
           "cart"
         ],
+        "description": "\nAdd, remove, update lines from kirbic cart\n\nOperation modes:\n- `add` adds a price to the cart in specified `quantity`. \n    * If `price_id` is already in cart, `quantity` is added to actual value.\n    * If `price_id` is not already in cart `quantity` is setted.\n    * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`\n- `remove` removes a price from the cart in specified `quantity`.\n    * If `price` is already in cart, `quantity` is removed to actual value.\n    * If `price` is not already in cart `quantity` is setted.\n    * If total quantity of 0 is reached `price_id` is deleted from actual cart.\n    * Throws an error if total quantity is less than `rule:min_quantity_in_cart`\n- `set` sets the total quantity for this `price_id`. Creates it if not exists.\n- `delete` deletesthe `price_id` line from the cart. `quantity` is ignored\n",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2169,21 +2141,8 @@
                     "default": 1,
                     "description": "quantity to add, or remove",
                     "type": "number"
-                  },
-                  "mode": {
-                    "description": "operation mode",
-                    "default": "add",
-                    "enum": [
-                      "add",
-                      "remove",
-                      "set",
-                      "delete"
-                    ]
                   }
-                },
-                "required": [
-                  "mode"
-                ]
+                }
               }
             }
           }
@@ -2195,6 +2154,21 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "mode",
+            "required": true,
+            "schema": {
+              "description": "operation mode",
+              "default": "add",
+              "enum": [
+                "add",
+                "remove",
+                "set",
+                "delete"
+              ]
             }
           },
           {
@@ -2223,6 +2197,7 @@
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "type": "object",
+                  "$id": "todo.com",
                   "title": "Cart",
                   "description": "a cart in kirbic",
                   "additionalProperties": false,
@@ -2237,10 +2212,10 @@
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "$id": "cart_line",
                         "title": "Cart Line",
                         "additionalProperties": false,
                         "description": "a cart line",
-                        "$id": "cart_line",
                         "properties": {
                           "price": {
                             "$id": "https://api.kirbic.com/schemas/api-catalog/price",
@@ -2518,6 +2493,7 @@
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "type": "object",
+                  "$id": "todo.com",
                   "title": "Cart",
                   "description": "a cart in kirbic",
                   "additionalProperties": false,
@@ -2532,10 +2508,10 @@
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "$id": "cart_line",
                         "title": "Cart Line",
                         "additionalProperties": false,
                         "description": "a cart line",
-                        "$id": "cart_line",
                         "properties": {
                           "price": {
                             "$id": "https://api.kirbic.com/schemas/api-catalog/price",
@@ -3787,11 +3763,7 @@
   },
   "servers": [
     {
-      "description": "development",
-      "url": "http://localhost:3500"
-    },
-    {
-      "description": "production",
+      "description": "Kirbic Production",
       "url": "https://api.kirbic.com"
     }
   ],

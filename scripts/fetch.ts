@@ -1,7 +1,7 @@
 import * as fs from "fs-extra";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3500";
+const BASE_URL = "https://api.kirbic.com";
 
 (async () => {
   const api = axios.create({ baseURL: BASE_URL });
