@@ -3,6 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "Kirbic types from openapi specs",
   "version": "1.0.0",
   "author": "Marc Pomar (marc@corecode.school)",
   "license": "MIT",
