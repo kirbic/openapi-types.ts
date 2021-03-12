@@ -4,30 +4,6 @@
  */
 
 export interface paths {
-  "/": {
-    get: {
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
-  };
-  "/internal/database": {
-    get: {
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
-  };
-  "/healtz": {
-    get: {
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
-  };
   "/shop/": {
     /** Info about shop in **x-shopcopter-shop** header */
     get: {
@@ -461,11 +437,28 @@ export interface paths {
       };
     };
   };
-  "/cart/{price_id}": {
+  "/cart/{mode}/{price_id}": {
+    /**
+     * Add, remove, update lines from kirbic cart
+     *
+     * Operation modes:
+     * - `add` adds a price to the cart in specified `quantity`.
+     *     * If `price_id` is already in cart, `quantity` is added to actual value.
+     *     * If `price_id` is not already in cart `quantity` is setted.
+     *     * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`
+     * - `remove` removes a price from the cart in specified `quantity`.
+     *     * If `price` is already in cart, `quantity` is removed to actual value.
+     *     * If `price` is not already in cart `quantity` is setted.
+     *     * If total quantity of 0 is reached `price_id` is deleted from actual cart.
+     *     * Throws an error if total quantity is less than `rule:min_quantity_in_cart`
+     * - `set` sets the total quantity for this `price_id`. Creates it if not exists.
+     * - `delete` deletesthe `price_id` line from the cart. `quantity` is ignored
+     */
     patch: {
       parameters: {
         path: {
           price_id: string;
+          mode: "add" | "remove" | "set" | "delete";
         };
         header: {
           /** Kirbic shop identifier */
@@ -530,8 +523,6 @@ export interface paths {
           "application/json": {
             /** quantity to add, or remove */
             quantity?: number;
-            /** operation mode */
-            mode: "add" | "remove" | "set" | "delete";
           };
         };
       };
