@@ -4,7 +4,7 @@
     "access": "public"
   },
   "description": "Kirbic typescript types generated from openapi spec",
-  "version": "1.0.0",
+  "version": "1.0.0-dev",
   "author": "Marc Pomar (marc@corecode.school)",
   "license": "MIT",
   "repository": "github.com:kirbic/openapi-types.ts",
