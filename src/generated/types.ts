@@ -5,437 +5,60 @@
 
 export interface paths {
   "/shop/": {
-    /** Info about shop in **x-shopcopter-shop** header */
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** get shop info */
+    get: operations["shop/info"];
   };
   "/shop/all": {
-    get: {
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** Get info for all of your owned shops */
+    get: operations["shop/all"];
   };
   "/shop/create": {
-    /** Use this method to create a new shop instance. See [pricing](https://docs.kirbic.com/pricing) for more info. */
-    post: {
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            name: string;
-            site_url: string;
-            description?: string;
-            brandy_id?: string;
-            admin_email?: string;
-          };
-        };
-      };
-    };
+    /** Create a new show with you as the owner. See [pricing](https://www.kirbic.com/pricing) for more info */
+    post: operations["shop/create"];
   };
   "/catalog/product/": {
-    get: {
-      parameters: {
-        query: {
-          collection_slug?: string;
-          collection_id?: string;
-        };
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** collection of products */
-        200: {
-          content: {
-            "application/json": {
-              items: {
-                id: string;
-                name: string;
-                slug: string;
-                description: string;
-                description_short: string;
-                prices: {
-                  id: string;
-                  name?: string;
-                  /** currency */
-                  currency: "EUR" | "USD";
-                  /** unit */
-                  unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                  unit_amount: number;
-                  active: boolean;
-                  product_id: string;
-                  metadata?: { [key: string]: any };
-                }[];
-                vendor?: string;
-                tags: string[];
-                active: boolean;
-                metadata?: { [key: string]: any };
-              }[];
-              metadata?: {
-                /** collection of products */
-                collection?: {
-                  id: string;
-                  slug: string;
-                  name: string;
-                  description: string;
-                  tags: string[];
-                };
-              };
-            } & { [key: string]: any };
-          };
-        };
-      };
-    };
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** a product in the dashboard */
-        200: {
-          content: {
-            "application/json": {
-              id: string;
-              name: string;
-              slug: string;
-              description: string;
-              description_short: string;
-              prices: {
-                id: string;
-                name?: string;
-                /** currency */
-                currency: "EUR" | "USD";
-                /** unit */
-                unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                unit_amount: number;
-                active: boolean;
-                product_id: string;
-                metadata?: { [key: string]: any };
-              }[];
-              vendor?: string;
-              tags: string[];
-              active: boolean;
-              metadata?: { [key: string]: any };
-            };
-          };
-        };
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            name: string;
-            description?: string;
-            description_short?: string;
-            prices: components["schemas"]["def-3"][];
-            vendor?: string;
-            tags?: string[];
-          };
-        };
-      };
-    };
-  };
-  "/catalog/product/{product_id_or_slug}": {
-    get: {
-      parameters: {
-        path: {
-          product_id_or_slug: string;
-        };
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** a product in the dashboard */
-        200: {
-          content: {
-            "application/json": {
-              id: string;
-              name: string;
-              slug: string;
-              description: string;
-              description_short: string;
-              prices: {
-                id: string;
-                name?: string;
-                /** currency */
-                currency: "EUR" | "USD";
-                /** unit */
-                unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                unit_amount: number;
-                active: boolean;
-                product_id: string;
-                metadata?: { [key: string]: any };
-              }[];
-              vendor?: string;
-              tags: string[];
-              active: boolean;
-              metadata?: { [key: string]: any };
-            };
-          };
-        };
-      };
-    };
+    /** list all products in this shop */
+    get: operations["products/list"];
+    /** Create a product */
+    post: operations["products/create"];
   };
   "/catalog/product/{product_id}": {
-    post: {
-      parameters: {
-        path: {
-          product_id: string;
-        };
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            active?: boolean;
-            name?: string;
-            description?: string;
-            description_short?: string;
-            vendor?: string;
-            tags?: string[];
-          };
-        };
-      };
-    };
-    delete: {
-      parameters: {
-        path: {
-          product_id: string;
-        };
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** update a product */
+    post: operations["products/update"];
+    /** delete a product and it's prices */
+    delete: operations["products/delete"];
+  };
+  "/catalog/product/{product_identifier}": {
+    /** Get a product using it's id or it's slug */
+    get: operations["products/get"];
   };
   "/catalog/price/{product_id}": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** update a price */
+    post: operations["prices/update"];
   };
   "/catalog/collection/": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** collection of products */
-        200: {
-          content: {
-            "application/json": {
-              items: {
-                id: string;
-                slug: string;
-                name: string;
-                description: string;
-                tags: string[];
-              }[];
-            } & { [key: string]: any };
-          };
-        };
-      };
-    };
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** collection of products */
-        200: {
-          content: {
-            "application/json": {
-              id: string;
-              slug: string;
-              name: string;
-              description: string;
-              tags: string[];
-            };
-          };
-        };
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            name: string;
-            description?: string;
-            slug?: string;
-            tags: string[];
-          };
-        };
-      };
-    };
+    /** List all collections */
+    get: operations["collections/list"];
+    /** Create a new collection */
+    post: operations["collections/create"];
   };
-  "/catalog/collection/tags": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** collection of products */
-        200: {
-          content: {
-            "application/json": {
-              items: {
-                id: string;
-                slug: string;
-                name: string;
-                description: string;
-                tags: string[];
-              }[];
-            } & { [key: string]: any };
-          };
-        };
-      };
-    };
+  "/catalog/collection/search": {
+    /** Search collection by tags */
+    get: operations["collections/search"];
   };
   "/catalog/collection/{collection_id}": {
-    delete: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** Delete a new collection */
+    delete: operations["collections/delete"];
   };
   "/media/upload": {
-    get: {
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** upload a media file to a product */
+    get: operations["media/upload"];
   };
   "/cart/": {
     /** Get the user shopping cart for this specific shop and user */
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** a cart in kirbic */
-        200: {
-          content: {
-            "application/json": {
-              id: string;
-              shop_id: string;
-              lines: {
-                /** A price associated with a product */
-                price: {
-                  id: string;
-                  name?: string;
-                  /** currency */
-                  currency: "EUR" | "USD";
-                  /** unit */
-                  unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                  unit_amount: number;
-                  active: boolean;
-                  product_id: string;
-                  metadata?: { [key: string]: any };
-                };
-                /** a product in the dashboard */
-                product: {
-                  id: string;
-                  name: string;
-                  slug: string;
-                  description: string;
-                  description_short: string;
-                  prices: {
-                    id: string;
-                    name?: string;
-                    /** currency */
-                    currency: "EUR" | "USD";
-                    /** unit */
-                    unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                    unit_amount: number;
-                    active: boolean;
-                    product_id: string;
-                    metadata?: { [key: string]: any };
-                  }[];
-                  vendor?: string;
-                  tags: string[];
-                  active: boolean;
-                  metadata?: { [key: string]: any };
-                };
-                quantity: number;
-              }[];
-              total: string;
-              metadata?: { [key: string]: any };
-            };
-          };
-        };
-      };
-    };
+    get: operations["cart/getAllAddresses"];
     /** Empty the current cart */
-    delete: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    delete: operations["cart/metadata"];
   };
   "/cart/{mode}/{price_id}": {
     /**
@@ -454,707 +77,983 @@ export interface paths {
      * - `set` sets the total quantity for this `price_id`. Creates it if not exists.
      * - `delete` deletesthe `price_id` line from the cart. `quantity` is ignored
      */
-    patch: {
-      parameters: {
-        path: {
-          price_id: string;
-          mode: "add" | "remove" | "set" | "delete";
-        };
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** a cart in kirbic */
-        200: {
-          content: {
-            "application/json": {
-              id: string;
-              shop_id: string;
-              lines: {
-                /** A price associated with a product */
-                price: {
-                  id: string;
-                  name?: string;
-                  /** currency */
-                  currency: "EUR" | "USD";
-                  /** unit */
-                  unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                  unit_amount: number;
-                  active: boolean;
-                  product_id: string;
-                  metadata?: { [key: string]: any };
-                };
-                /** a product in the dashboard */
-                product: {
-                  id: string;
-                  name: string;
-                  slug: string;
-                  description: string;
-                  description_short: string;
-                  prices: {
-                    id: string;
-                    name?: string;
-                    /** currency */
-                    currency: "EUR" | "USD";
-                    /** unit */
-                    unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                    unit_amount: number;
-                    active: boolean;
-                    product_id: string;
-                    metadata?: { [key: string]: any };
-                  }[];
-                  vendor?: string;
-                  tags: string[];
-                  active: boolean;
-                  metadata?: { [key: string]: any };
-                };
-                quantity: number;
-              }[];
-              total: string;
-              metadata?: { [key: string]: any };
-            };
-          };
-        };
-      };
-      requestBody: {
-        content: {
-          "application/json": {
-            /** quantity to add, or remove */
-            quantity?: number;
-          };
-        };
-      };
-    };
+    patch: operations["cart/operation"];
   };
   "/cart/metadata": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** a cart in kirbic */
-        200: {
-          content: {
-            "application/json": {
-              id: string;
-              shop_id: string;
-              lines: {
-                /** A price associated with a product */
-                price: {
-                  id: string;
-                  name?: string;
-                  /** currency */
-                  currency: "EUR" | "USD";
-                  /** unit */
-                  unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                  unit_amount: number;
-                  active: boolean;
-                  product_id: string;
-                  metadata?: { [key: string]: any };
-                };
-                /** a product in the dashboard */
-                product: {
-                  id: string;
-                  name: string;
-                  slug: string;
-                  description: string;
-                  description_short: string;
-                  prices: {
-                    id: string;
-                    name?: string;
-                    /** currency */
-                    currency: "EUR" | "USD";
-                    /** unit */
-                    unit_type: "pallet" | "box" | "units" | "item" | "pack";
-                    unit_amount: number;
-                    active: boolean;
-                    product_id: string;
-                    metadata?: { [key: string]: any };
-                  }[];
-                  vendor?: string;
-                  tags: string[];
-                  active: boolean;
-                  metadata?: { [key: string]: any };
-                };
-                quantity: number;
-              }[];
-              total: string;
-              metadata?: { [key: string]: any };
-            };
-          };
-        };
-      };
-    };
+    /** Set the metadata */
+    post: operations["cart/metadata"];
   };
   "/payment/add-payment": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** Add a payment to an order */
+    post: operations["payment/addPayment"];
   };
   "/order/": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+    /** list all orders */
+    get: operations["order/list"];
+    /** Create an order. Only owner users can call this method, others should use payment paywall */
+    post: operations["order/create"];
   };
-  "/order/delete_all_orders": {
-    delete: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
-    };
+  "/order/paywall": {
+    /** Create an order through paywall */
+    post: operations["order/paywall"];
+  };
+  "/order/cancel/{order_id}": {
+    /** Cancel an order */
+    post: operations["order/cancel"];
+  };
+  "/order/clone/{order_id}": {
+    /** Cancel an order */
+    post: operations["order/clone"];
   };
   "/helpdesk/": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
+    /** Create a helpdesk event */
+    post: operations["helpdesk/create"];
+  };
+  "/address/": {
+    /** Get all user saved addresses */
+    get: operations["address/getAllAddresses"];
+    /** Create an address for the current user */
+    post: operations["address/getAllAddresses"];
+  };
+  "/address/{address_id}": {
+    /** Delete a user address */
+    delete: operations["address/delete"];
+  };
+}
+
+export interface components {
+  schemas: {};
+}
+
+export interface operations {
+  /** get shop info */
+  "shop/info": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Get info for all of your owned shops */
+  "shop/all": {
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Create a new show with you as the owner. See [pricing](https://www.kirbic.com/pricing) for more info */
+  "shop/create": {
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          name: string;
+          description: string;
+          site_url: string;
+          brandy_id?: string;
+          admin_email: string;
         };
       };
-      responses: {
-        /** Helpdesk ticket created */
-        201: {
-          content: {
-            "application/json": {
-              message?: string;
+    };
+  };
+  /** list all products in this shop */
+  "products/list": {
+    parameters: {
+      query: {
+        collection_slug?: string;
+        collection_id?: string;
+      };
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** listed products */
+      200: {
+        content: {
+          "application/json": {
+            items: {
+              id: string;
+              name: string;
+              slug: string;
+              description: string;
+              description_short: string;
+              prices: {
+                id: string;
+                name: string;
+                /** kirbic supported currencies */
+                currency: "EUR" | "USD";
+                /** kirbic supported unit types */
+                unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                unit_amount: number;
+                active: boolean;
+                product_id: string;
+                metadata?: { [key: string]: any };
+              }[];
+              tags: string[];
+              /** product media */
+              media?: {
+                /** media object */
+                media_default?: {
+                  id: string;
+                  type: "image" | "video" | "file";
+                };
+                elements?: {
+                  id: string;
+                  type: "image" | "video" | "file";
+                }[];
+              };
+              vendor_id?: string;
+              active: boolean;
+              metadata?: { [key: string]: any };
+            }[];
+            total: number;
+            metadata?: {
+              /** a collection of products */
+              collection?: {
+                id: string;
+                slug: string;
+                name: string;
+                description: string;
+                tags: string[];
+              };
             };
           };
         };
       };
-      requestBody: {
+    };
+  };
+  /** Create a product */
+  "products/create": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** A product */
+      200: {
         content: {
           "application/json": {
-            /** registered kirbic desktype */
-            desk_type: string;
-            /** some sort of user identifer */
+            id: string;
             name: string;
-            /** user email */
-            email: string;
-            fields: components["schemas"]["def-12"];
+            slug: string;
+            description: string;
+            description_short: string;
+            prices: {
+              id: string;
+              name: string;
+              /** kirbic supported currencies */
+              currency: "EUR" | "USD";
+              /** kirbic supported unit types */
+              unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+              unit_amount: number;
+              active: boolean;
+              product_id: string;
+              metadata?: { [key: string]: any };
+            }[];
+            tags: string[];
+            /** product media */
+            media?: {
+              /** media object */
+              media_default?: {
+                id: string;
+                type: "image" | "video" | "file";
+              };
+              elements?: {
+                id: string;
+                type: "image" | "video" | "file";
+              }[];
+            };
+            vendor_id?: string;
+            active: boolean;
+            metadata?: { [key: string]: any };
+          };
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          name: string;
+          description?: string;
+          description_short?: string;
+          prices?: {
+            name: string;
+            /** kirbic supported currencies */
+            currency: "EUR" | "USD";
+            unit_amount: number;
+            /** kirbic supported unit types */
+            unit_type: "pallet" | "box" | "units" | "item" | "pack";
+            active: boolean;
+            metadata?: { [key: string]: any };
+          }[];
+          vendor_id?: string;
+          tags?: string[];
+        };
+      };
+    };
+  };
+  /** update a product */
+  "products/update": {
+    parameters: {
+      path: {
+        product_id: string;
+      };
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          name: string;
+          description?: string;
+          description_short?: string;
+          prices?: {
+            name: string;
+            /** kirbic supported currencies */
+            currency: "EUR" | "USD";
+            unit_amount: number;
+            /** kirbic supported unit types */
+            unit_type: "pallet" | "box" | "units" | "item" | "pack";
+            active: boolean;
+            metadata?: { [key: string]: any };
+          }[];
+          vendor_id?: string;
+          tags?: string[];
+        };
+      };
+    };
+  };
+  /** delete a product and it's prices */
+  "products/delete": {
+    parameters: {
+      path: {
+        product_id: string;
+      };
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** A product */
+      200: {
+        content: {
+          "application/json": {
+            id: string;
+            name: string;
+            slug: string;
+            description: string;
+            description_short: string;
+            prices: {
+              id: string;
+              name: string;
+              /** kirbic supported currencies */
+              currency: "EUR" | "USD";
+              /** kirbic supported unit types */
+              unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+              unit_amount: number;
+              active: boolean;
+              product_id: string;
+              metadata?: { [key: string]: any };
+            }[];
+            tags: string[];
+            /** product media */
+            media?: {
+              /** media object */
+              media_default?: {
+                id: string;
+                type: "image" | "video" | "file";
+              };
+              elements?: {
+                id: string;
+                type: "image" | "video" | "file";
+              }[];
+            };
+            vendor_id?: string;
+            active: boolean;
             metadata?: { [key: string]: any };
           };
         };
       };
     };
   };
-  "/address/": {
-    get: {
-      responses: {
-        /** Address Response */
-        200: {
-          content: {
-            "application/json": {
-              addresses: {
-                /** Address unique identifier */
-                id: string;
-                /** Nombre y apellidos */
-                name: string;
-                /** primera línea de la dirección */
-                line_1: string;
-                /** segunda línea de la dirección */
-                line_2?: string;
-                /** Ciudad */
-                city: string;
-                /** Província o región */
-                state: string;
-                /** codigo postal */
-                zip_code: string;
-                /** se puede usar para ayudar con la entrega */
-                phone_number?: string;
-                /** detalles para ayudar con la entrega */
-                deliver_instructions?: string;
-              }[];
-              default_billing:
-                | { [key: string]: any }
-                | {
-                    /** Address unique identifier */
-                    id: string;
-                    /** Nombre y apellidos */
-                    name: string;
-                    /** primera línea de la dirección */
-                    line_1: string;
-                    /** segunda línea de la dirección */
-                    line_2?: string;
-                    /** Ciudad */
-                    city: string;
-                    /** Província o región */
-                    state: string;
-                    /** codigo postal */
-                    zip_code: string;
-                    /** se puede usar para ayudar con la entrega */
-                    phone_number?: string;
-                    /** detalles para ayudar con la entrega */
-                    deliver_instructions?: string;
-                  };
-              default_delivery:
-                | { [key: string]: any }
-                | {
-                    /** Address unique identifier */
-                    id: string;
-                    /** Nombre y apellidos */
-                    name: string;
-                    /** primera línea de la dirección */
-                    line_1: string;
-                    /** segunda línea de la dirección */
-                    line_2?: string;
-                    /** Ciudad */
-                    city: string;
-                    /** Província o región */
-                    state: string;
-                    /** codigo postal */
-                    zip_code: string;
-                    /** se puede usar para ayudar con la entrega */
-                    phone_number?: string;
-                    /** detalles para ayudar con la entrega */
-                    deliver_instructions?: string;
-                  };
-            };
-          };
-        };
+  /** Get a product using it's id or it's slug */
+  "products/get": {
+    parameters: {
+      query: {
+        by: "slug" | "id";
+      };
+      path: {
+        product_identifier: string;
+      };
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
       };
     };
-    /** Create an address for the current user */
-    post: {
-      responses: {
-        /** Address Response */
-        200: {
-          content: {
-            "application/json": {
-              addresses: {
-                /** Address unique identifier */
-                id: string;
-                /** Nombre y apellidos */
-                name: string;
-                /** primera línea de la dirección */
-                line_1: string;
-                /** segunda línea de la dirección */
-                line_2?: string;
-                /** Ciudad */
-                city: string;
-                /** Província o región */
-                state: string;
-                /** codigo postal */
-                zip_code: string;
-                /** se puede usar para ayudar con la entrega */
-                phone_number?: string;
-                /** detalles para ayudar con la entrega */
-                deliver_instructions?: string;
-              }[];
-              default_billing:
-                | { [key: string]: any }
-                | {
-                    /** Address unique identifier */
-                    id: string;
-                    /** Nombre y apellidos */
-                    name: string;
-                    /** primera línea de la dirección */
-                    line_1: string;
-                    /** segunda línea de la dirección */
-                    line_2?: string;
-                    /** Ciudad */
-                    city: string;
-                    /** Província o región */
-                    state: string;
-                    /** codigo postal */
-                    zip_code: string;
-                    /** se puede usar para ayudar con la entrega */
-                    phone_number?: string;
-                    /** detalles para ayudar con la entrega */
-                    deliver_instructions?: string;
-                  };
-              default_delivery:
-                | { [key: string]: any }
-                | {
-                    /** Address unique identifier */
-                    id: string;
-                    /** Nombre y apellidos */
-                    name: string;
-                    /** primera línea de la dirección */
-                    line_1: string;
-                    /** segunda línea de la dirección */
-                    line_2?: string;
-                    /** Ciudad */
-                    city: string;
-                    /** Província o región */
-                    state: string;
-                    /** codigo postal */
-                    zip_code: string;
-                    /** se puede usar para ayudar con la entrega */
-                    phone_number?: string;
-                    /** detalles para ayudar con la entrega */
-                    deliver_instructions?: string;
-                  };
-            };
-          };
-        };
-      };
-      requestBody: {
+    responses: {
+      /** A product */
+      200: {
         content: {
           "application/json": {
-            /** Nombre y apellidos */
-            name?: string;
-            /** primera línea de la dirección */
-            line_1?: string;
-            /** segunda línea de la dirección */
-            line_2?: string;
-            /** Ciudad */
-            city?: string;
-            /** Província o región */
-            state?: string;
-            /** codigo postal */
-            zip_code?: string;
-            /** se puede usar para ayudar con la entrega */
-            phone_number?: string;
-            /** detalles para ayudar con la entrega */
-            deliver_instructions?: string;
-            /** Sets the addres that you are creating as the default_billing address. This is forced to true if it's the first address created */
-            default_billing?: boolean;
-            /** Sets the addres that you are creating as the default_delivery address. This is forced to true if it's the first address created */
-            default_delivery?: boolean;
+            id: string;
+            name: string;
+            slug: string;
+            description: string;
+            description_short: string;
+            prices: {
+              id: string;
+              name: string;
+              /** kirbic supported currencies */
+              currency: "EUR" | "USD";
+              /** kirbic supported unit types */
+              unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+              unit_amount: number;
+              active: boolean;
+              product_id: string;
+              metadata?: { [key: string]: any };
+            }[];
+            tags: string[];
+            /** product media */
+            media?: {
+              /** media object */
+              media_default?: {
+                id: string;
+                type: "image" | "video" | "file";
+              };
+              elements?: {
+                id: string;
+                type: "image" | "video" | "file";
+              }[];
+            };
+            vendor_id?: string;
+            active: boolean;
+            metadata?: { [key: string]: any };
           };
         };
       };
     };
   };
-  "/address/{address_id}": {
-    delete: {
-      parameters: {
-        path: {
-          address_id: string;
-        };
+  /** update a price */
+  "prices/update": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** List all collections */
+  "collections/list": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** collection of products */
+      200: {
+        content: {
+          "application/json": {
+            items?: {
+              id: string;
+              slug: string;
+              name: string;
+              description: string;
+              tags: string[];
+            }[];
+          } & { [key: string]: any };
+        };
       };
     };
   };
-  "/payment/paypal/complete/{session_id}": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
+  /** Create a new collection */
+  "collections/create": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** a collection of products */
+      200: {
+        content: {
+          "application/json": {
+            id: string;
+            slug: string;
+            name: string;
+            description: string;
+            tags: string[];
+          };
         };
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          items?: {
+            id: string;
+            slug: string;
+            name: string;
+            description: string;
+            tags: string[];
+          }[];
+        } & { [key: string]: any };
       };
     };
   };
-  "/payment/paypal/capture": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
+  /** Search collection by tags */
+  "collections/search": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    responses: {
+      /** collection of products */
+      200: {
+        content: {
+          "application/json": {
+            items?: {
+              id: string;
+              slug: string;
+              name: string;
+              description: string;
+              tags: string[];
+            }[];
+          } & { [key: string]: any };
+        };
       };
     };
   };
-  "/payment/paypal/session": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
+  /** Delete a new collection */
+  "collections/delete": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** upload a media file to a product */
+  "media/upload": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Get the user shopping cart for this specific shop and user */
+  "cart/getAllAddresses": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** a cart in kirbic */
+      200: {
+        content: {
+          "application/json": {
+            id: string;
+            shop_id: string;
+            lines: {
+              /** A price associated with a product */
+              price: {
+                id: string;
+                name: string;
+                /** kirbic supported currencies */
+                currency: "EUR" | "USD";
+                /** kirbic supported unit types */
+                unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                unit_amount: number;
+                active: boolean;
+                product_id: string;
+                metadata?: { [key: string]: any };
+              };
+              /** A product */
+              product: {
+                id: string;
+                name: string;
+                slug: string;
+                description: string;
+                description_short: string;
+                prices: {
+                  id: string;
+                  name: string;
+                  /** kirbic supported currencies */
+                  currency: "EUR" | "USD";
+                  /** kirbic supported unit types */
+                  unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                  unit_amount: number;
+                  active: boolean;
+                  product_id: string;
+                  metadata?: { [key: string]: any };
+                }[];
+                tags: string[];
+                /** product media */
+                media?: {
+                  /** media object */
+                  media_default?: {
+                    id: string;
+                    type: "image" | "video" | "file";
+                  };
+                  elements?: {
+                    id: string;
+                    type: "image" | "video" | "file";
+                  }[];
+                };
+                vendor_id?: string;
+                active: boolean;
+                metadata?: { [key: string]: any };
+              };
+              quantity: number;
+            }[];
+            total: string;
+            metadata?: { [key: string]: any };
+          };
+        };
       };
     };
   };
-  "/payment/stripe/webhook": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
+  /** Set the metadata */
+  "cart/metadata": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    responses: {
+      /** a cart in kirbic */
+      200: {
+        content: {
+          "application/json": {
+            id: string;
+            shop_id: string;
+            lines: {
+              /** A price associated with a product */
+              price: {
+                id: string;
+                name: string;
+                /** kirbic supported currencies */
+                currency: "EUR" | "USD";
+                /** kirbic supported unit types */
+                unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                unit_amount: number;
+                active: boolean;
+                product_id: string;
+                metadata?: { [key: string]: any };
+              };
+              /** A product */
+              product: {
+                id: string;
+                name: string;
+                slug: string;
+                description: string;
+                description_short: string;
+                prices: {
+                  id: string;
+                  name: string;
+                  /** kirbic supported currencies */
+                  currency: "EUR" | "USD";
+                  /** kirbic supported unit types */
+                  unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                  unit_amount: number;
+                  active: boolean;
+                  product_id: string;
+                  metadata?: { [key: string]: any };
+                }[];
+                tags: string[];
+                /** product media */
+                media?: {
+                  /** media object */
+                  media_default?: {
+                    id: string;
+                    type: "image" | "video" | "file";
+                  };
+                  elements?: {
+                    id: string;
+                    type: "image" | "video" | "file";
+                  }[];
+                };
+                vendor_id?: string;
+                active: boolean;
+                metadata?: { [key: string]: any };
+              };
+              quantity: number;
+            }[];
+            total: string;
+            metadata?: { [key: string]: any };
+          };
+        };
       };
     };
   };
-  "/payment/stripe/get-public-key": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
+  /**
+   * Add, remove, update lines from kirbic cart
+   *
+   * Operation modes:
+   * - `add` adds a price to the cart in specified `quantity`.
+   *     * If `price_id` is already in cart, `quantity` is added to actual value.
+   *     * If `price_id` is not already in cart `quantity` is setted.
+   *     * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`
+   * - `remove` removes a price from the cart in specified `quantity`.
+   *     * If `price` is already in cart, `quantity` is removed to actual value.
+   *     * If `price` is not already in cart `quantity` is setted.
+   *     * If total quantity of 0 is reached `price_id` is deleted from actual cart.
+   *     * Throws an error if total quantity is less than `rule:min_quantity_in_cart`
+   * - `set` sets the total quantity for this `price_id`. Creates it if not exists.
+   * - `delete` deletesthe `price_id` line from the cart. `quantity` is ignored
+   */
+  "cart/operation": {
+    parameters: {
+      path: {
+        price_id: string;
+        mode: "add" | "remove" | "set" | "delete";
+      };
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** a cart in kirbic */
+      200: {
+        content: {
+          "application/json": {
+            id: string;
+            shop_id: string;
+            lines: {
+              /** A price associated with a product */
+              price: {
+                id: string;
+                name: string;
+                /** kirbic supported currencies */
+                currency: "EUR" | "USD";
+                /** kirbic supported unit types */
+                unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                unit_amount: number;
+                active: boolean;
+                product_id: string;
+                metadata?: { [key: string]: any };
+              };
+              /** A product */
+              product: {
+                id: string;
+                name: string;
+                slug: string;
+                description: string;
+                description_short: string;
+                prices: {
+                  id: string;
+                  name: string;
+                  /** kirbic supported currencies */
+                  currency: "EUR" | "USD";
+                  /** kirbic supported unit types */
+                  unit_type?: "pallet" | "box" | "units" | "item" | "pack";
+                  unit_amount: number;
+                  active: boolean;
+                  product_id: string;
+                  metadata?: { [key: string]: any };
+                }[];
+                tags: string[];
+                /** product media */
+                media?: {
+                  /** media object */
+                  media_default?: {
+                    id: string;
+                    type: "image" | "video" | "file";
+                  };
+                  elements?: {
+                    id: string;
+                    type: "image" | "video" | "file";
+                  }[];
+                };
+                vendor_id?: string;
+                active: boolean;
+                metadata?: { [key: string]: any };
+              };
+              quantity: number;
+            }[];
+            total: string;
+            metadata?: { [key: string]: any };
+          };
         };
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** quantity to add, or remove */
+          quantity?: number;
+        };
       };
     };
   };
-  "/payment/stripe/complete/{shop_id}/{session_id}": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
+  /** Add a payment to an order */
+  "payment/addPayment": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** list all orders */
+  "order/list": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Create an order. Only owner users can call this method, others should use payment paywall */
+  "order/create": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Create an order through paywall */
+  "order/paywall": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Cancel an order */
+  "order/cancel": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Cancel an order */
+  "order/clone": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Default Response */
+      200: unknown;
+    };
+  };
+  /** Create a helpdesk event */
+  "helpdesk/create": {
+    parameters: {
+      header: {
+        /** Kirbic shop identifier */
+        "x-shopcopter-shop"?: string;
+      };
+    };
+    responses: {
+      /** Helpdesk ticket created */
+      201: {
+        content: {
+          "application/json": {
+            message?: string;
+          };
         };
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          desk_type: string;
+          /** Some sort of user identifer */
+          name: string;
+          /** user email */
+          email: string;
+          fields: {
+            label: string;
+            type: string;
+            value: string;
+          }[];
+        };
       };
     };
   };
-  "/payment/stripe/register": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
+  /** Create an address for the current user */
+  "address/getAllAddresses": {
+    responses: {
+      /** address response */
+      200: {
+        content: {
+          "application/json": {
+            /** direcciones del usuario */
+            addresses: {
+              /** a que nombre entregamos el paquete */
+              name: string;
+              /** primera linea de la dirección */
+              line_1: string;
+              /** segunda linea de la dirección */
+              line_2?: string;
+              /** ciudad */
+              city: string;
+              /** província o región */
+              state: string;
+              /** código postal */
+              zip_code: string;
+              /** el teléfono se puede usar para ayudar con la entrega */
+              phone_number?: string;
+              /** detalles para ayudar con la entrega */
+              delivery_instructions?: string;
+              /** identificador */
+              id: string;
+            }[];
+            /** dirección de facturación por defecto */
+            default_billing:
+              | {
+                  /** a que nombre entregamos el paquete */
+                  name: string;
+                  /** primera linea de la dirección */
+                  line_1: string;
+                  /** segunda linea de la dirección */
+                  line_2?: string;
+                  /** ciudad */
+                  city: string;
+                  /** província o región */
+                  state: string;
+                  /** código postal */
+                  zip_code: string;
+                  /** el teléfono se puede usar para ayudar con la entrega */
+                  phone_number?: string;
+                  /** detalles para ayudar con la entrega */
+                  delivery_instructions?: string;
+                  /** identificador */
+                  id: string;
+                }
+              | { [key: string]: any };
+            /** dirección de envio por defecto */
+            default_delivery:
+              | {
+                  /** a que nombre entregamos el paquete */
+                  name: string;
+                  /** primera linea de la dirección */
+                  line_1: string;
+                  /** segunda linea de la dirección */
+                  line_2?: string;
+                  /** ciudad */
+                  city: string;
+                  /** província o región */
+                  state: string;
+                  /** código postal */
+                  zip_code: string;
+                  /** el teléfono se puede usar para ayudar con la entrega */
+                  phone_number?: string;
+                  /** detalles para ayudar con la entrega */
+                  delivery_instructions?: string;
+                  /** identificador */
+                  id: string;
+                }
+              | { [key: string]: any };
+          };
         };
       };
-      responses: {
-        /** Default Response */
-        200: unknown;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** a que nombre entregamos el paquete */
+          name: string;
+          /** primera linea de la dirección */
+          line_1: string;
+          /** segunda linea de la dirección */
+          line_2?: string;
+          /** ciudad */
+          city: string;
+          /** província o región */
+          state: string;
+          /** código postal */
+          zip_code: string;
+          /** el teléfono se puede usar para ayudar con la entrega */
+          phone_number?: string;
+          /** detalles para ayudar con la entrega */
+          delivery_instructions?: string;
+          /** establecer como dirección de envio por defecto */
+          default_billing?: boolean;
+          /** dirección de envio por defecto */
+          default_delivery?: boolean;
+        };
       };
     };
   };
-  "/payment/stripe/unregister": {
-    get: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
+  /** Delete a user address */
+  "address/delete": {
+    parameters: {
+      path: {
+        address_id: string;
       };
     };
-  };
-  "/payment/stripe/session": {
-    post: {
-      parameters: {
-        header: {
-          /** Kirbic shop identifier */
-          "x-shopcopter-shop": string;
-        };
-      };
-      responses: {
-        /** Default Response */
-        200: unknown;
-      };
+    responses: {
+      /** Default Response */
+      200: unknown;
     };
   };
 }
-
-export interface components {
-  schemas: {
-    /** create a collection schema */
-    "def-0": {
-      name: string;
-      description?: string;
-      slug?: string;
-      tags: string[];
-    };
-    /** collection of products */
-    "def-1": {
-      items: any[];
-    } & { [key: string]: any };
-    /** collection of products */
-    "def-2": {
-      id: string;
-      slug: string;
-      name: string;
-      description: string;
-      tags: string[];
-    };
-    /** create a price for a product */
-    "def-3": {
-      name?: string;
-      currency: any;
-      unit_amount: number;
-      unit_type: any;
-      active: boolean;
-      metadata: { [key: string]: any };
-    };
-    /** update a price object */
-    "def-4": {
-      _id: string;
-      name?: string;
-      currency?: any;
-      unit_amount?: number;
-      unit_type?: any;
-      active?: boolean;
-      metadata?: { [key: string]: any };
-    };
-    /** A price associated with a product */
-    "def-5": {
-      id: string;
-      name?: string;
-      /** currency */
-      currency: "EUR" | "USD";
-      /** unit */
-      unit_type: "pallet" | "box" | "units" | "item" | "pack";
-      unit_amount: number;
-      active: boolean;
-      product_id: string;
-      metadata?: { [key: string]: any };
-    };
-    /** create a product */
-    "def-6": {
-      name: string;
-      description?: string;
-      description_short?: string;
-      prices: any[];
-      vendor?: string;
-      tags?: string[];
-    };
-    /** get products list */
-    "def-7": {
-      /** a collection slug */
-      collection_slug?: string;
-      /** a collection identifier */
-      collection_id?: string;
-    };
-    /** collection of products */
-    "def-8": {
-      items: any[];
-      metadata?: {
-        collection?: any;
-      };
-    } & { [key: string]: any };
-    /** update a product */
-    "def-9": {
-      active?: boolean;
-      name?: string;
-      description?: string;
-      description_short?: string;
-      vendor?: string;
-      tags?: string[];
-    };
-    /** a product in the dashboard */
-    "def-10": {
-      id: string;
-      name: string;
-      slug: string;
-      description: string;
-      description_short: string;
-      prices: {
-        id: string;
-        name?: string;
-        /** currency */
-        currency: "EUR" | "USD";
-        /** unit */
-        unit_type: "pallet" | "box" | "units" | "item" | "pack";
-        unit_amount: number;
-        active: boolean;
-        product_id: string;
-        metadata?: { [key: string]: any };
-      }[];
-      vendor?: string;
-      tags: string[];
-      active: boolean;
-      metadata?: { [key: string]: any };
-    };
-    /** create a helpdesk ticket */
-    "def-11": {
-      /** registered kirbic desktype */
-      desk_type: string;
-      /** some sort of user identifer */
-      name: string;
-      /** user email */
-      email: string;
-      fields: any;
-      metadata?: { [key: string]: any };
-    };
-    /** Helpdesk fields */
-    "def-12": {
-      [key: string]: {
-        label: string;
-        type?: string;
-        value: string;
-      };
-    };
-    /** Helpdesk single field */
-    "def-13": {
-      label: string;
-      type?: string;
-      value: string;
-    };
-    /** an address of a user */
-    "def-14": {
-      /** Address unique identifier */
-      id: string;
-      /** Nombre y apellidos */
-      name: string;
-      /** primera línea de la dirección */
-      line_1: string;
-      /** segunda línea de la dirección */
-      line_2?: string;
-      /** Ciudad */
-      city: string;
-      /** Província o región */
-      state: string;
-      /** codigo postal */
-      zip_code: string;
-      /** se puede usar para ayudar con la entrega */
-      phone_number?: string;
-      /** detalles para ayudar con la entrega */
-      deliver_instructions?: string;
-    };
-  };
-}
-
-export interface operations {}
