@@ -7,19 +7,6 @@
   },
   "components": {
     "securitySchemes": {
-      "oauth2": {
-        "type": "oauth2",
-        "flows": {
-          "authorizationCode": {
-            "authorizationUrl": "https://kirbic.eu.auth0.com/authorize",
-            "tokenUrl": "https://kirbic.eu.auth0.com/oauth/token",
-            "refreshUrl": "https://kirbic.eu.auth0.com/authorize",
-            "scopes": {
-              "user:read": "bla-ble"
-            }
-          }
-        }
-      },
       "cookie_session": {
         "type": "apiKey",
         "in": "cookie",
@@ -81,11 +68,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
+                "description": "Shop create",
                 "type": "object",
-                "title": "shop create",
-                "description": "shop create",
-                "$id": "todo.com",
                 "additionalProperties": false,
                 "properties": {
                   "name": {
@@ -106,9 +90,7 @@
                 },
                 "required": [
                   "name",
-                  "description",
-                  "site_url",
-                  "admin_email"
+                  "description"
                 ]
               }
             }
@@ -133,12 +115,10 @@
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "product create",
+                "description": "create a product",
                 "type": "object",
-                "$id": "todo.com",
-                "description": "product create",
                 "additionalProperties": false,
-                "title": "Product create",
                 "properties": {
                   "name": {
                     "type": "string"
@@ -152,55 +132,56 @@
                   "prices": {
                     "type": "array",
                     "items": {
+                      "title": "Price Create",
+                      "description": "creates a price object",
                       "type": "object",
                       "additionalProperties": false,
-                      "$id": "price_create",
-                      "title": "Price Create",
-                      "description": "price create",
                       "properties": {
                         "name": {
                           "type": "string"
                         },
                         "currency": {
+                          "title": "Currency",
+                          "description": "kirbic supported currencies",
+                          "default": "EUR",
                           "type": "string",
                           "enum": [
                             "EUR",
                             "USD"
-                          ],
-                          "default": "EUR",
-                          "title": "Currency",
-                          "$id": "currency",
-                          "description": "kirbic supported currencies"
-                        },
-                        "unit_amount": {
-                          "type": "number",
-                          "minimum": 0
+                          ]
                         },
                         "unit_type": {
+                          "title": "Unit",
+                          "description": "kirbic supported unit types",
+                          "default": "item",
+                          "type": "string",
                           "enum": [
                             "pallet",
                             "box",
                             "units",
                             "item",
                             "pack"
-                          ],
-                          "$id": "unit",
-                          "description": "kirbic supported unit types",
-                          "title": "Unit type"
+                          ]
+                        },
+                        "unit_amount": {
+                          "minimum": 0,
+                          "type": "number"
                         },
                         "active": {
+                          "default": true,
                           "type": "boolean"
                         },
                         "metadata": {
-                          "type": "object"
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {}
                         }
                       },
                       "required": [
                         "name",
                         "currency",
-                        "unit_amount",
                         "unit_type",
-                        "active"
+                        "unit_amount"
                       ]
                     }
                   },
@@ -212,10 +193,17 @@
                     "items": {
                       "type": "string"
                     }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "prices"
                 ]
               }
             }
@@ -235,15 +223,13 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "A product",
+            "description": "a product from the catalog",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "type": "object",
-                  "$id": "todo.com",
                   "title": "product",
-                  "description": "A product",
+                  "description": "a product from the catalog",
+                  "type": "object",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -264,10 +250,9 @@
                     "prices": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "$id": "price",
                         "title": "Price",
-                        "description": "A price associated with a product",
+                        "description": "a price associated with a product",
+                        "type": "object",
                         "additionalProperties": false,
                         "properties": {
                           "id": {
@@ -277,33 +262,31 @@
                             "type": "string"
                           },
                           "currency": {
+                            "title": "Currency",
+                            "description": "kirbic supported currencies",
+                            "default": "EUR",
                             "type": "string",
                             "enum": [
                               "EUR",
                               "USD"
-                            ],
-                            "default": "EUR",
-                            "title": "Currency",
-                            "$id": "currency",
-                            "description": "kirbic supported currencies"
+                            ]
                           },
                           "unit_type": {
+                            "title": "Unit",
+                            "description": "kirbic supported unit types",
+                            "default": "item",
+                            "type": "string",
                             "enum": [
                               "pallet",
                               "box",
                               "units",
                               "item",
                               "pack"
-                            ],
-                            "$id": "unit",
-                            "description": "kirbic supported unit types",
-                            "title": "Unit type",
-                            "type": "object",
-                            "additionalProperties": true
+                            ]
                           },
                           "unit_amount": {
-                            "type": "number",
-                            "minimum": 0
+                            "minimum": 0,
+                            "type": "number"
                           },
                           "active": {
                             "type": "boolean"
@@ -312,13 +295,16 @@
                             "type": "string"
                           },
                           "metadata": {
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
                           }
                         },
                         "required": [
                           "id",
                           "name",
                           "currency",
+                          "unit_type",
                           "unit_amount",
                           "active",
                           "product_id"
@@ -333,19 +319,16 @@
                     },
                     "media": {
                       "type": "object",
-                      "$id": "product_media",
-                      "title": "Product Media",
-                      "description": "product media",
                       "additionalProperties": false,
                       "properties": {
                         "media_default": {
                           "type": "object",
-                          "$id": "media_object",
-                          "title": "media object",
-                          "description": "media object",
                           "additionalProperties": false,
                           "properties": {
                             "id": {
+                              "type": "string"
+                            },
+                            "product_id": {
                               "type": "string"
                             },
                             "type": {
@@ -355,23 +338,27 @@
                                 "video",
                                 "file"
                               ]
+                            },
+                            "url": {
+                              "type": "string"
                             }
                           },
                           "required": [
                             "id",
-                            "type"
+                            "type",
+                            "url"
                           ]
                         },
                         "elements": {
                           "type": "array",
                           "items": {
                             "type": "object",
-                            "$id": "media_object",
-                            "title": "media object",
-                            "description": "media object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
+                                "type": "string"
+                              },
+                              "product_id": {
                                 "type": "string"
                               },
                               "type": {
@@ -381,15 +368,23 @@
                                   "video",
                                   "file"
                                 ]
+                              },
+                              "url": {
+                                "type": "string"
                               }
                             },
                             "required": [
                               "id",
-                              "type"
+                              "type",
+                              "url"
                             ]
                           }
                         }
-                      }
+                      },
+                      "required": [
+                        "media_default",
+                        "elements"
+                      ]
                     },
                     "vendor_id": {
                       "type": "string"
@@ -398,7 +393,10 @@
                       "type": "boolean"
                     },
                     "metadata": {
-                      "type": "object"
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
                     }
                   },
                   "required": [
@@ -409,6 +407,7 @@
                     "description_short",
                     "prices",
                     "tags",
+                    "media",
                     "active"
                   ]
                 }
@@ -426,20 +425,42 @@
         "parameters": [
           {
             "in": "query",
-            "name": "collection_slug",
+            "name": "by",
             "required": false,
             "schema": {
-              "description": "collection slug",
+              "default": "slug",
+              "title": "how to filter collections",
+              "type": "string",
+              "enum": [
+                "id",
+                "slug"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "collection",
+            "required": false,
+            "schema": {
+              "description": "the identifier",
+              "title": "identifier",
               "type": "string"
             }
           },
           {
             "in": "query",
-            "name": "collection_id",
+            "name": "page",
             "required": false,
             "schema": {
-              "description": "collection id",
-              "type": "string"
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "type": "number"
             }
           },
           {
@@ -455,239 +476,477 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "listed products",
+            "description": "Default Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "type": "object",
-                  "title": "Product Response",
-                  "$id": "todo.com",
-                  "description": "listed products",
-                  "additionalProperties": false,
-                  "properties": {
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$id": "product",
-                        "title": "product",
-                        "description": "A product",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "slug": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "description_short": {
-                            "type": "string"
-                          },
-                          "prices": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "$id": "price",
-                              "title": "Price",
-                              "description": "A price associated with a product",
-                              "additionalProperties": false,
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                },
-                                "currency": {
-                                  "type": "string",
-                                  "enum": [
-                                    "EUR",
-                                    "USD"
-                                  ],
-                                  "default": "EUR",
-                                  "title": "Currency",
-                                  "$id": "currency",
-                                  "description": "kirbic supported currencies"
-                                },
-                                "unit_type": {
-                                  "enum": [
-                                    "pallet",
-                                    "box",
-                                    "units",
-                                    "item",
-                                    "pack"
-                                  ],
-                                  "$id": "unit",
-                                  "description": "kirbic supported unit types",
-                                  "title": "Unit type",
-                                  "type": "object",
-                                  "additionalProperties": true
-                                },
-                                "unit_amount": {
-                                  "type": "number",
-                                  "minimum": 0
-                                },
-                                "active": {
-                                  "type": "boolean"
-                                },
-                                "product_id": {
-                                  "type": "string"
-                                },
-                                "metadata": {
-                                  "type": "object"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "name",
-                                "currency",
-                                "unit_amount",
-                                "active",
-                                "product_id"
-                              ]
-                            }
-                          },
-                          "tags": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "media": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "page": {
+                          "type": "number"
+                        },
+                        "per_page": {
+                          "type": "number"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "title": "product",
+                            "description": "a product from the catalog",
                             "type": "object",
-                            "$id": "product_media",
-                            "title": "Product Media",
-                            "description": "product media",
                             "additionalProperties": false,
                             "properties": {
-                              "media_default": {
-                                "type": "object",
-                                "$id": "media_object",
-                                "title": "media object",
-                                "description": "media object",
-                                "additionalProperties": false,
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "type": {
-                                    "type": "string",
-                                    "enum": [
-                                      "image",
-                                      "video",
-                                      "file"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "type"
-                                ]
+                              "id": {
+                                "type": "string"
                               },
-                              "elements": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "description_short": {
+                                "type": "string"
+                              },
+                              "prices": {
                                 "type": "array",
                                 "items": {
+                                  "title": "Price",
+                                  "description": "a price associated with a product",
                                   "type": "object",
-                                  "$id": "media_object",
-                                  "title": "media object",
-                                  "description": "media object",
                                   "additionalProperties": false,
                                   "properties": {
                                     "id": {
                                       "type": "string"
                                     },
-                                    "type": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "kirbic supported currencies",
+                                      "default": "EUR",
                                       "type": "string",
                                       "enum": [
-                                        "image",
-                                        "video",
-                                        "file"
+                                        "EUR",
+                                        "USD"
                                       ]
+                                    },
+                                    "unit_type": {
+                                      "title": "Unit",
+                                      "description": "kirbic supported unit types",
+                                      "default": "item",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    },
+                                    "unit_amount": {
+                                      "minimum": 0,
+                                      "type": "number"
+                                    },
+                                    "active": {
+                                      "type": "boolean"
+                                    },
+                                    "product_id": {
+                                      "type": "string"
+                                    },
+                                    "metadata": {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {}
                                     }
                                   },
                                   "required": [
                                     "id",
-                                    "type"
+                                    "name",
+                                    "currency",
+                                    "unit_type",
+                                    "unit_amount",
+                                    "active",
+                                    "product_id"
                                   ]
                                 }
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "media": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "media_default": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "product_id": {
+                                        "type": "string"
+                                      },
+                                      "type": {
+                                        "type": "string",
+                                        "enum": [
+                                          "image",
+                                          "video",
+                                          "file"
+                                        ]
+                                      },
+                                      "url": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "type",
+                                      "url"
+                                    ]
+                                  },
+                                  "elements": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "product_id": {
+                                          "type": "string"
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "image",
+                                            "video",
+                                            "file"
+                                          ]
+                                        },
+                                        "url": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "type",
+                                        "url"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "media_default",
+                                  "elements"
+                                ]
+                              },
+                              "vendor_id": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
                               }
-                            }
-                          },
-                          "vendor_id": {
-                            "type": "string"
-                          },
-                          "active": {
-                            "type": "boolean"
-                          },
-                          "metadata": {
-                            "type": "object"
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "description",
+                              "description_short",
+                              "prices",
+                              "tags",
+                              "media",
+                              "active"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "page",
+                        "per_page",
+                        "items"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "page": {
+                          "type": "number"
+                        },
+                        "per_page": {
+                          "type": "number"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "title": "product",
+                            "description": "a product from the catalog",
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "description_short": {
+                                "type": "string"
+                              },
+                              "prices": {
+                                "type": "array",
+                                "items": {
+                                  "title": "Price",
+                                  "description": "a price associated with a product",
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "currency": {
+                                      "title": "Currency",
+                                      "description": "kirbic supported currencies",
+                                      "default": "EUR",
+                                      "type": "string",
+                                      "enum": [
+                                        "EUR",
+                                        "USD"
+                                      ]
+                                    },
+                                    "unit_type": {
+                                      "title": "Unit",
+                                      "description": "kirbic supported unit types",
+                                      "default": "item",
+                                      "type": "string",
+                                      "enum": [
+                                        "pallet",
+                                        "box",
+                                        "units",
+                                        "item",
+                                        "pack"
+                                      ]
+                                    },
+                                    "unit_amount": {
+                                      "minimum": 0,
+                                      "type": "number"
+                                    },
+                                    "active": {
+                                      "type": "boolean"
+                                    },
+                                    "product_id": {
+                                      "type": "string"
+                                    },
+                                    "metadata": {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {}
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "currency",
+                                    "unit_type",
+                                    "unit_amount",
+                                    "active",
+                                    "product_id"
+                                  ]
+                                }
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "media": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "media_default": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "product_id": {
+                                        "type": "string"
+                                      },
+                                      "type": {
+                                        "type": "string",
+                                        "enum": [
+                                          "image",
+                                          "video",
+                                          "file"
+                                        ]
+                                      },
+                                      "url": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "type",
+                                      "url"
+                                    ]
+                                  },
+                                  "elements": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "product_id": {
+                                          "type": "string"
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "image",
+                                            "video",
+                                            "file"
+                                          ]
+                                        },
+                                        "url": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "type",
+                                        "url"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "media_default",
+                                  "elements"
+                                ]
+                              },
+                              "vendor_id": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "description",
+                              "description_short",
+                              "prices",
+                              "tags",
+                              "media",
+                              "active"
+                            ]
                           }
                         },
-                        "required": [
-                          "id",
-                          "name",
-                          "slug",
-                          "description",
-                          "description_short",
-                          "prices",
-                          "tags",
-                          "active"
-                        ]
-                      }
-                    },
-                    "total": {
-                      "type": "number"
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "collection": {
+                        "metadata": {
                           "type": "object",
-                          "$id": "collection",
-                          "title": "Collection",
-                          "description": "a collection of products",
                           "additionalProperties": false,
                           "properties": {
-                            "id": {
-                              "type": "string"
-                            },
-                            "slug": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "description": {
-                              "type": "string"
-                            },
-                            "tags": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
+                            "collection": {
+                              "description": "a collection of products",
+                              "title": "Collection",
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "tags": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "metadata": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {}
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "slug",
+                                "name",
+                                "description",
+                                "tags"
+                              ]
                             }
                           },
                           "required": [
-                            "id",
-                            "slug",
-                            "name",
-                            "description",
-                            "tags"
+                            "collection"
                           ]
                         }
-                      }
+                      },
+                      "required": [
+                        "total",
+                        "page",
+                        "per_page",
+                        "items",
+                        "metadata"
+                      ]
                     }
-                  },
-                  "required": [
-                    "items",
-                    "total"
                   ]
                 }
               }
@@ -725,15 +984,13 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "A product",
+            "description": "a product from the catalog",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "type": "object",
-                  "$id": "todo.com",
                   "title": "product",
-                  "description": "A product",
+                  "description": "a product from the catalog",
+                  "type": "object",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -754,10 +1011,9 @@
                     "prices": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "$id": "price",
                         "title": "Price",
-                        "description": "A price associated with a product",
+                        "description": "a price associated with a product",
+                        "type": "object",
                         "additionalProperties": false,
                         "properties": {
                           "id": {
@@ -767,33 +1023,31 @@
                             "type": "string"
                           },
                           "currency": {
+                            "title": "Currency",
+                            "description": "kirbic supported currencies",
+                            "default": "EUR",
                             "type": "string",
                             "enum": [
                               "EUR",
                               "USD"
-                            ],
-                            "default": "EUR",
-                            "title": "Currency",
-                            "$id": "currency",
-                            "description": "kirbic supported currencies"
+                            ]
                           },
                           "unit_type": {
+                            "title": "Unit",
+                            "description": "kirbic supported unit types",
+                            "default": "item",
+                            "type": "string",
                             "enum": [
                               "pallet",
                               "box",
                               "units",
                               "item",
                               "pack"
-                            ],
-                            "$id": "unit",
-                            "description": "kirbic supported unit types",
-                            "title": "Unit type",
-                            "type": "object",
-                            "additionalProperties": true
+                            ]
                           },
                           "unit_amount": {
-                            "type": "number",
-                            "minimum": 0
+                            "minimum": 0,
+                            "type": "number"
                           },
                           "active": {
                             "type": "boolean"
@@ -802,13 +1056,16 @@
                             "type": "string"
                           },
                           "metadata": {
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
                           }
                         },
                         "required": [
                           "id",
                           "name",
                           "currency",
+                          "unit_type",
                           "unit_amount",
                           "active",
                           "product_id"
@@ -823,19 +1080,16 @@
                     },
                     "media": {
                       "type": "object",
-                      "$id": "product_media",
-                      "title": "Product Media",
-                      "description": "product media",
                       "additionalProperties": false,
                       "properties": {
                         "media_default": {
                           "type": "object",
-                          "$id": "media_object",
-                          "title": "media object",
-                          "description": "media object",
                           "additionalProperties": false,
                           "properties": {
                             "id": {
+                              "type": "string"
+                            },
+                            "product_id": {
                               "type": "string"
                             },
                             "type": {
@@ -845,23 +1099,27 @@
                                 "video",
                                 "file"
                               ]
+                            },
+                            "url": {
+                              "type": "string"
                             }
                           },
                           "required": [
                             "id",
-                            "type"
+                            "type",
+                            "url"
                           ]
                         },
                         "elements": {
                           "type": "array",
                           "items": {
                             "type": "object",
-                            "$id": "media_object",
-                            "title": "media object",
-                            "description": "media object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
+                                "type": "string"
+                              },
+                              "product_id": {
                                 "type": "string"
                               },
                               "type": {
@@ -871,15 +1129,23 @@
                                   "video",
                                   "file"
                                 ]
+                              },
+                              "url": {
+                                "type": "string"
                               }
                             },
                             "required": [
                               "id",
-                              "type"
+                              "type",
+                              "url"
                             ]
                           }
                         }
-                      }
+                      },
+                      "required": [
+                        "media_default",
+                        "elements"
+                      ]
                     },
                     "vendor_id": {
                       "type": "string"
@@ -888,7 +1154,10 @@
                       "type": "boolean"
                     },
                     "metadata": {
-                      "type": "object"
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
                     }
                   },
                   "required": [
@@ -899,6 +1168,7 @@
                     "description_short",
                     "prices",
                     "tags",
+                    "media",
                     "active"
                   ]
                 }
@@ -917,11 +1187,10 @@
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "product create",
+                "description": "create a product",
                 "type": "object",
-                "$id": "todo.com",
-                "title": "Product update",
-                "description": "update a product",
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
@@ -935,55 +1204,56 @@
                   "prices": {
                     "type": "array",
                     "items": {
+                      "title": "Price Create",
+                      "description": "creates a price object",
                       "type": "object",
                       "additionalProperties": false,
-                      "$id": "price_create",
-                      "title": "Price Create",
-                      "description": "price create",
                       "properties": {
                         "name": {
                           "type": "string"
                         },
                         "currency": {
+                          "title": "Currency",
+                          "description": "kirbic supported currencies",
+                          "default": "EUR",
                           "type": "string",
                           "enum": [
                             "EUR",
                             "USD"
-                          ],
-                          "default": "EUR",
-                          "title": "Currency",
-                          "$id": "currency",
-                          "description": "kirbic supported currencies"
-                        },
-                        "unit_amount": {
-                          "type": "number",
-                          "minimum": 0
+                          ]
                         },
                         "unit_type": {
+                          "title": "Unit",
+                          "description": "kirbic supported unit types",
+                          "default": "item",
+                          "type": "string",
                           "enum": [
                             "pallet",
                             "box",
                             "units",
                             "item",
                             "pack"
-                          ],
-                          "$id": "unit",
-                          "description": "kirbic supported unit types",
-                          "title": "Unit type"
+                          ]
+                        },
+                        "unit_amount": {
+                          "minimum": 0,
+                          "type": "number"
                         },
                         "active": {
+                          "default": true,
                           "type": "boolean"
                         },
                         "metadata": {
-                          "type": "object"
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {}
                         }
                       },
                       "required": [
                         "name",
                         "currency",
-                        "unit_amount",
                         "unit_type",
-                        "active"
+                        "unit_amount"
                       ]
                     }
                   },
@@ -995,10 +1265,17 @@
                     "items": {
                       "type": "string"
                     }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "prices"
                 ]
               }
             }
@@ -1013,6 +1290,221 @@
               "type": "string"
             }
           },
+          {
+            "in": "header",
+            "name": "x-shopcopter-shop",
+            "required": false,
+            "description": "Kirbic shop identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "a product from the catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "product",
+                  "description": "a product from the catalog",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "description_short": {
+                      "type": "string"
+                    },
+                    "prices": {
+                      "type": "array",
+                      "items": {
+                        "title": "Price",
+                        "description": "a price associated with a product",
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "currency": {
+                            "title": "Currency",
+                            "description": "kirbic supported currencies",
+                            "default": "EUR",
+                            "type": "string",
+                            "enum": [
+                              "EUR",
+                              "USD"
+                            ]
+                          },
+                          "unit_type": {
+                            "title": "Unit",
+                            "description": "kirbic supported unit types",
+                            "default": "item",
+                            "type": "string",
+                            "enum": [
+                              "pallet",
+                              "box",
+                              "units",
+                              "item",
+                              "pack"
+                            ]
+                          },
+                          "unit_amount": {
+                            "minimum": 0,
+                            "type": "number"
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "product_id": {
+                            "type": "string"
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "currency",
+                          "unit_type",
+                          "unit_amount",
+                          "active",
+                          "product_id"
+                        ]
+                      }
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "media": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "media_default": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "product_id": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "image",
+                                "video",
+                                "file"
+                              ]
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "type",
+                            "url"
+                          ]
+                        },
+                        "elements": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "product_id": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video",
+                                  "file"
+                                ]
+                              },
+                              "url": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "url"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "media_default",
+                        "elements"
+                      ]
+                    },
+                    "vendor_id": {
+                      "type": "string"
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "description",
+                    "description_short",
+                    "prices",
+                    "tags",
+                    "media",
+                    "active"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/product/delete_all": {
+      "post": {
+        "operationId": "products/delete_all",
+        "tags": [
+          "products"
+        ],
+        "description": "delete all products in shop",
+        "parameters": [
           {
             "in": "header",
             "name": "x-shopcopter-shop",
@@ -1044,12 +1536,28 @@
             "name": "by",
             "required": true,
             "schema": {
+              "default": "slug",
               "type": "string",
               "enum": [
-                "slug",
-                "id"
-              ],
-              "default": "slug"
+                "id",
+                "slug"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "type": "number"
             }
           },
           {
@@ -1057,7 +1565,6 @@
             "name": "product_identifier",
             "required": true,
             "schema": {
-              "description": "product identifier",
               "type": "string"
             }
           },
@@ -1074,15 +1581,13 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "A product",
+            "description": "a product from the catalog",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "type": "object",
-                  "$id": "todo.com",
                   "title": "product",
-                  "description": "A product",
+                  "description": "a product from the catalog",
+                  "type": "object",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -1103,10 +1608,9 @@
                     "prices": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "$id": "price",
                         "title": "Price",
-                        "description": "A price associated with a product",
+                        "description": "a price associated with a product",
+                        "type": "object",
                         "additionalProperties": false,
                         "properties": {
                           "id": {
@@ -1116,33 +1620,31 @@
                             "type": "string"
                           },
                           "currency": {
+                            "title": "Currency",
+                            "description": "kirbic supported currencies",
+                            "default": "EUR",
                             "type": "string",
                             "enum": [
                               "EUR",
                               "USD"
-                            ],
-                            "default": "EUR",
-                            "title": "Currency",
-                            "$id": "currency",
-                            "description": "kirbic supported currencies"
+                            ]
                           },
                           "unit_type": {
+                            "title": "Unit",
+                            "description": "kirbic supported unit types",
+                            "default": "item",
+                            "type": "string",
                             "enum": [
                               "pallet",
                               "box",
                               "units",
                               "item",
                               "pack"
-                            ],
-                            "$id": "unit",
-                            "description": "kirbic supported unit types",
-                            "title": "Unit type",
-                            "type": "object",
-                            "additionalProperties": true
+                            ]
                           },
                           "unit_amount": {
-                            "type": "number",
-                            "minimum": 0
+                            "minimum": 0,
+                            "type": "number"
                           },
                           "active": {
                             "type": "boolean"
@@ -1151,13 +1653,16 @@
                             "type": "string"
                           },
                           "metadata": {
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
                           }
                         },
                         "required": [
                           "id",
                           "name",
                           "currency",
+                          "unit_type",
                           "unit_amount",
                           "active",
                           "product_id"
@@ -1172,19 +1677,16 @@
                     },
                     "media": {
                       "type": "object",
-                      "$id": "product_media",
-                      "title": "Product Media",
-                      "description": "product media",
                       "additionalProperties": false,
                       "properties": {
                         "media_default": {
                           "type": "object",
-                          "$id": "media_object",
-                          "title": "media object",
-                          "description": "media object",
                           "additionalProperties": false,
                           "properties": {
                             "id": {
+                              "type": "string"
+                            },
+                            "product_id": {
                               "type": "string"
                             },
                             "type": {
@@ -1194,23 +1696,27 @@
                                 "video",
                                 "file"
                               ]
+                            },
+                            "url": {
+                              "type": "string"
                             }
                           },
                           "required": [
                             "id",
-                            "type"
+                            "type",
+                            "url"
                           ]
                         },
                         "elements": {
                           "type": "array",
                           "items": {
                             "type": "object",
-                            "$id": "media_object",
-                            "title": "media object",
-                            "description": "media object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
+                                "type": "string"
+                              },
+                              "product_id": {
                                 "type": "string"
                               },
                               "type": {
@@ -1220,15 +1726,23 @@
                                   "video",
                                   "file"
                                 ]
+                              },
+                              "url": {
+                                "type": "string"
                               }
                             },
                             "required": [
                               "id",
-                              "type"
+                              "type",
+                              "url"
                             ]
                           }
                         }
-                      }
+                      },
+                      "required": [
+                        "media_default",
+                        "elements"
+                      ]
                     },
                     "vendor_id": {
                       "type": "string"
@@ -1237,7 +1751,10 @@
                       "type": "boolean"
                     },
                     "metadata": {
-                      "type": "object"
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
                     }
                   },
                   "required": [
@@ -1248,6 +1765,7 @@
                     "description_short",
                     "prices",
                     "tags",
+                    "media",
                     "active"
                   ]
                 }
@@ -1257,7 +1775,7 @@
         }
       }
     },
-    "/catalog/price/{product_id}": {
+    "/catalog/price/": {
       "post": {
         "operationId": "prices/update",
         "tags": [
@@ -1304,24 +1822,28 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "collection of products",
+            "description": "Default Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
                   "type": "object",
-                  "$id": "todo.com",
-                  "title": "Collection response",
-                  "description": "collection of products",
-                  "additionalProperties": true,
+                  "additionalProperties": false,
                   "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "per_page": {
+                      "type": "number"
+                    },
                     "items": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "$id": "collection",
-                        "title": "Collection",
                         "description": "a collection of products",
+                        "title": "Collection",
+                        "type": "object",
                         "additionalProperties": false,
                         "properties": {
                           "id": {
@@ -1341,6 +1863,11 @@
                             "items": {
                               "type": "string"
                             }
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
                           }
                         },
                         "required": [
@@ -1352,7 +1879,13 @@
                         ]
                       }
                     }
-                  }
+                  },
+                  "required": [
+                    "total",
+                    "page",
+                    "per_page",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1369,51 +1902,30 @@
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "Collection create",
+                "description": "Create a collection",
                 "type": "object",
-                "$id": "todo.com",
-                "title": "Collection response",
-                "description": "collection of products",
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "properties": {
-                  "items": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "tags": {
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "$id": "collection",
-                      "title": "Collection",
-                      "description": "a collection of products",
-                      "additionalProperties": false,
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        },
-                        "slug": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "type": "string"
-                        },
-                        "tags": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "slug",
-                        "name",
-                        "description",
-                        "tags"
-                      ]
+                      "type": "string"
                     }
+                  },
+                  "slug": {
+                    "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "name"
+                ]
               }
             }
           }
@@ -1436,11 +1948,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "type": "object",
-                  "$id": "todo.com",
-                  "title": "Collection",
                   "description": "a collection of products",
+                  "title": "Collection",
+                  "type": "object",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -1460,6 +1970,11 @@
                       "items": {
                         "type": "string"
                       }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {}
                     }
                   },
                   "required": [
@@ -1497,55 +2012,46 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "collection of products",
+            "description": "a collection of products",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "description": "a collection of products",
+                  "title": "Collection",
                   "type": "object",
-                  "$id": "todo.com",
-                  "title": "Collection response",
-                  "description": "collection of products",
-                  "additionalProperties": true,
+                  "additionalProperties": false,
                   "properties": {
-                    "items": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "tags": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "$id": "collection",
-                        "title": "Collection",
-                        "description": "a collection of products",
-                        "additionalProperties": false,
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "slug": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "tags": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "slug",
-                          "name",
-                          "description",
-                          "tags"
-                        ]
+                        "type": "string"
                       }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {}
                     }
-                  }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "description",
+                    "tags"
+                  ]
                 }
               }
             }
@@ -1579,14 +2085,24 @@
         }
       }
     },
-    "/media/upload": {
+    "/catalog/feed": {
       "get": {
-        "operationId": "media/upload",
+        "operationId": "products/facebook_mkt_feed",
         "tags": [
-          "media"
+          "products"
         ],
-        "description": "upload a media file to a product",
+        "description": "Facebook marketing feed",
         "parameters": [
+          {
+            "in": "query",
+            "name": "shop_id",
+            "required": true,
+            "schema": {
+              "title": "shop_id",
+              "description": "which shop to generate feed",
+              "type": "string"
+            }
+          },
           {
             "in": "header",
             "name": "x-shopcopter-shop",
@@ -1600,14 +2116,559 @@
         "security": [],
         "responses": {
           "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "text/csv": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/": {
+      "get": {
+        "operationId": "address/getAddresses",
+        "tags": [
+          "address"
+        ],
+        "description": "Get all user saved addresses ",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "address response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "address response",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "addresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "description": "identificador de dirección",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "a que nombre entregamos el paquete",
+                            "type": "string"
+                          },
+                          "line_1": {
+                            "description": "primera linea de la dirección",
+                            "type": "string"
+                          },
+                          "line_2": {
+                            "description": "segunda linea de la dirección",
+                            "type": "string"
+                          },
+                          "city": {
+                            "description": "ciudad",
+                            "type": "string"
+                          },
+                          "state": {
+                            "description": "provincia o región",
+                            "type": "string"
+                          },
+                          "zip_code": {
+                            "description": "código postal",
+                            "type": "string"
+                          },
+                          "phone_number": {
+                            "description": "el teléfono se puede usar para ayudar con la entrega",
+                            "type": "string"
+                          },
+                          "delivery_instructions": {
+                            "description": "detalles para ayudar con la entrega",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "line_1",
+                          "city",
+                          "state",
+                          "zip_code"
+                        ]
+                      }
+                    },
+                    "default_delivery": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "description": "identificador de dirección",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "a que nombre entregamos el paquete",
+                              "type": "string"
+                            },
+                            "line_1": {
+                              "description": "primera linea de la dirección",
+                              "type": "string"
+                            },
+                            "line_2": {
+                              "description": "segunda linea de la dirección",
+                              "type": "string"
+                            },
+                            "city": {
+                              "description": "ciudad",
+                              "type": "string"
+                            },
+                            "state": {
+                              "description": "provincia o región",
+                              "type": "string"
+                            },
+                            "zip_code": {
+                              "description": "código postal",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "el teléfono se puede usar para ayudar con la entrega",
+                              "type": "string"
+                            },
+                            "delivery_instructions": {
+                              "description": "detalles para ayudar con la entrega",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "city",
+                            "state",
+                            "zip_code"
+                          ]
+                        }
+                      ]
+                    },
+                    "default_billing": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "description": "identificador de dirección",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "a que nombre entregamos el paquete",
+                              "type": "string"
+                            },
+                            "line_1": {
+                              "description": "primera linea de la dirección",
+                              "type": "string"
+                            },
+                            "line_2": {
+                              "description": "segunda linea de la dirección",
+                              "type": "string"
+                            },
+                            "city": {
+                              "description": "ciudad",
+                              "type": "string"
+                            },
+                            "state": {
+                              "description": "provincia o región",
+                              "type": "string"
+                            },
+                            "zip_code": {
+                              "description": "código postal",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "el teléfono se puede usar para ayudar con la entrega",
+                              "type": "string"
+                            },
+                            "delivery_instructions": {
+                              "description": "detalles para ayudar con la entrega",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "city",
+                            "state",
+                            "zip_code"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "addresses",
+                    "default_delivery",
+                    "default_billing"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "address/createAddresses",
+        "tags": [
+          "address"
+        ],
+        "description": "Create an address for the current user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "default_billing": {
+                    "description": "establecer como dirección de envio por defecto",
+                    "type": "boolean"
+                  },
+                  "default_delivery": {
+                    "description": "dirección de envio por defecto",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "description": "a que nombre entregamos el paquete",
+                    "type": "string"
+                  },
+                  "line_1": {
+                    "description": "primera linea de la dirección",
+                    "type": "string"
+                  },
+                  "line_2": {
+                    "description": "segunda linea de la dirección",
+                    "type": "string"
+                  },
+                  "city": {
+                    "description": "ciudad",
+                    "type": "string"
+                  },
+                  "state": {
+                    "description": "provincia o región",
+                    "type": "string"
+                  },
+                  "zip_code": {
+                    "description": "código postal",
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "description": "el teléfono se puede usar para ayudar con la entrega",
+                    "type": "string"
+                  },
+                  "delivery_instructions": {
+                    "description": "detalles para ayudar con la entrega",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "default_billing",
+                  "default_delivery",
+                  "name",
+                  "line_1",
+                  "city",
+                  "state",
+                  "zip_code"
+                ]
+              }
+            }
+          }
+        },
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "address response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "address response",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "addresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "description": "identificador de dirección",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "a que nombre entregamos el paquete",
+                            "type": "string"
+                          },
+                          "line_1": {
+                            "description": "primera linea de la dirección",
+                            "type": "string"
+                          },
+                          "line_2": {
+                            "description": "segunda linea de la dirección",
+                            "type": "string"
+                          },
+                          "city": {
+                            "description": "ciudad",
+                            "type": "string"
+                          },
+                          "state": {
+                            "description": "provincia o región",
+                            "type": "string"
+                          },
+                          "zip_code": {
+                            "description": "código postal",
+                            "type": "string"
+                          },
+                          "phone_number": {
+                            "description": "el teléfono se puede usar para ayudar con la entrega",
+                            "type": "string"
+                          },
+                          "delivery_instructions": {
+                            "description": "detalles para ayudar con la entrega",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "line_1",
+                          "city",
+                          "state",
+                          "zip_code"
+                        ]
+                      }
+                    },
+                    "default_delivery": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "description": "identificador de dirección",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "a que nombre entregamos el paquete",
+                              "type": "string"
+                            },
+                            "line_1": {
+                              "description": "primera linea de la dirección",
+                              "type": "string"
+                            },
+                            "line_2": {
+                              "description": "segunda linea de la dirección",
+                              "type": "string"
+                            },
+                            "city": {
+                              "description": "ciudad",
+                              "type": "string"
+                            },
+                            "state": {
+                              "description": "provincia o región",
+                              "type": "string"
+                            },
+                            "zip_code": {
+                              "description": "código postal",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "el teléfono se puede usar para ayudar con la entrega",
+                              "type": "string"
+                            },
+                            "delivery_instructions": {
+                              "description": "detalles para ayudar con la entrega",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "city",
+                            "state",
+                            "zip_code"
+                          ]
+                        }
+                      ]
+                    },
+                    "default_billing": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "description": "identificador de dirección",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "a que nombre entregamos el paquete",
+                              "type": "string"
+                            },
+                            "line_1": {
+                              "description": "primera linea de la dirección",
+                              "type": "string"
+                            },
+                            "line_2": {
+                              "description": "segunda linea de la dirección",
+                              "type": "string"
+                            },
+                            "city": {
+                              "description": "ciudad",
+                              "type": "string"
+                            },
+                            "state": {
+                              "description": "provincia o región",
+                              "type": "string"
+                            },
+                            "zip_code": {
+                              "description": "código postal",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "el teléfono se puede usar para ayudar con la entrega",
+                              "type": "string"
+                            },
+                            "delivery_instructions": {
+                              "description": "detalles para ayudar con la entrega",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "line_1",
+                            "city",
+                            "state",
+                            "zip_code"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "addresses",
+                    "default_delivery",
+                    "default_billing"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/{address_id}": {
+      "delete": {
+        "operationId": "address/delete",
+        "tags": [
+          "address"
+        ],
+        "description": "Delete a user address",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "address_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
             "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/media/{product_id}": {
+      "post": {
+        "operationId": "media/upload",
+        "description": "Upload a file to a product",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "product_id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "image",
+                        "video",
+                        "file"
+                      ]
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "url"
+                  ]
+                }
+              }
+            }
           }
         }
       }
     },
     "/cart/": {
       "get": {
-        "operationId": "cart/getAllAddresses",
+        "operationId": "cart/getCart",
         "tags": [
           "cart"
         ],
@@ -1626,15 +2687,12 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "a cart in kirbic",
+            "description": "a kirbic cart",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "description": "a kirbic cart",
                   "type": "object",
-                  "$id": "todo.com",
-                  "title": "Cart",
-                  "description": "a cart in kirbic",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -1646,17 +2704,17 @@
                     "lines": {
                       "type": "array",
                       "items": {
+                        "description": "cart line",
                         "type": "object",
-                        "$id": "cart-line",
-                        "title": "Cart Line",
                         "additionalProperties": false,
-                        "description": "a cart line",
                         "properties": {
+                          "id": {
+                            "type": "string"
+                          },
                           "price": {
-                            "type": "object",
-                            "$id": "price",
                             "title": "Price",
-                            "description": "A price associated with a product",
+                            "description": "a price associated with a product",
+                            "type": "object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
@@ -1666,33 +2724,31 @@
                                 "type": "string"
                               },
                               "currency": {
+                                "title": "Currency",
+                                "description": "kirbic supported currencies",
+                                "default": "EUR",
                                 "type": "string",
                                 "enum": [
                                   "EUR",
                                   "USD"
-                                ],
-                                "default": "EUR",
-                                "title": "Currency",
-                                "$id": "currency",
-                                "description": "kirbic supported currencies"
+                                ]
                               },
                               "unit_type": {
+                                "title": "Unit",
+                                "description": "kirbic supported unit types",
+                                "default": "item",
+                                "type": "string",
                                 "enum": [
                                   "pallet",
                                   "box",
                                   "units",
                                   "item",
                                   "pack"
-                                ],
-                                "$id": "unit",
-                                "description": "kirbic supported unit types",
-                                "title": "Unit type",
-                                "type": "object",
-                                "additionalProperties": true
+                                ]
                               },
                               "unit_amount": {
-                                "type": "number",
-                                "minimum": 0
+                                "minimum": 0,
+                                "type": "number"
                               },
                               "active": {
                                 "type": "boolean"
@@ -1701,23 +2757,25 @@
                                 "type": "string"
                               },
                               "metadata": {
-                                "type": "object"
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {}
                               }
                             },
                             "required": [
                               "id",
                               "name",
                               "currency",
+                              "unit_type",
                               "unit_amount",
                               "active",
                               "product_id"
                             ]
                           },
                           "product": {
-                            "type": "object",
-                            "$id": "product",
                             "title": "product",
-                            "description": "A product",
+                            "description": "a product from the catalog",
+                            "type": "object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
@@ -1738,10 +2796,9 @@
                               "prices": {
                                 "type": "array",
                                 "items": {
-                                  "type": "object",
-                                  "$id": "price",
                                   "title": "Price",
-                                  "description": "A price associated with a product",
+                                  "description": "a price associated with a product",
+                                  "type": "object",
                                   "additionalProperties": false,
                                   "properties": {
                                     "id": {
@@ -1751,33 +2808,31 @@
                                       "type": "string"
                                     },
                                     "currency": {
+                                      "title": "Currency",
+                                      "description": "kirbic supported currencies",
+                                      "default": "EUR",
                                       "type": "string",
                                       "enum": [
                                         "EUR",
                                         "USD"
-                                      ],
-                                      "default": "EUR",
-                                      "title": "Currency",
-                                      "$id": "currency",
-                                      "description": "kirbic supported currencies"
+                                      ]
                                     },
                                     "unit_type": {
+                                      "title": "Unit",
+                                      "description": "kirbic supported unit types",
+                                      "default": "item",
+                                      "type": "string",
                                       "enum": [
                                         "pallet",
                                         "box",
                                         "units",
                                         "item",
                                         "pack"
-                                      ],
-                                      "$id": "unit",
-                                      "description": "kirbic supported unit types",
-                                      "title": "Unit type",
-                                      "type": "object",
-                                      "additionalProperties": true
+                                      ]
                                     },
                                     "unit_amount": {
-                                      "type": "number",
-                                      "minimum": 0
+                                      "minimum": 0,
+                                      "type": "number"
                                     },
                                     "active": {
                                       "type": "boolean"
@@ -1786,13 +2841,16 @@
                                       "type": "string"
                                     },
                                     "metadata": {
-                                      "type": "object"
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {}
                                     }
                                   },
                                   "required": [
                                     "id",
                                     "name",
                                     "currency",
+                                    "unit_type",
                                     "unit_amount",
                                     "active",
                                     "product_id"
@@ -1807,19 +2865,16 @@
                               },
                               "media": {
                                 "type": "object",
-                                "$id": "product_media",
-                                "title": "Product Media",
-                                "description": "product media",
                                 "additionalProperties": false,
                                 "properties": {
                                   "media_default": {
                                     "type": "object",
-                                    "$id": "media_object",
-                                    "title": "media object",
-                                    "description": "media object",
                                     "additionalProperties": false,
                                     "properties": {
                                       "id": {
+                                        "type": "string"
+                                      },
+                                      "product_id": {
                                         "type": "string"
                                       },
                                       "type": {
@@ -1829,23 +2884,27 @@
                                           "video",
                                           "file"
                                         ]
+                                      },
+                                      "url": {
+                                        "type": "string"
                                       }
                                     },
                                     "required": [
                                       "id",
-                                      "type"
+                                      "type",
+                                      "url"
                                     ]
                                   },
                                   "elements": {
                                     "type": "array",
                                     "items": {
                                       "type": "object",
-                                      "$id": "media_object",
-                                      "title": "media object",
-                                      "description": "media object",
                                       "additionalProperties": false,
                                       "properties": {
                                         "id": {
+                                          "type": "string"
+                                        },
+                                        "product_id": {
                                           "type": "string"
                                         },
                                         "type": {
@@ -1855,15 +2914,23 @@
                                             "video",
                                             "file"
                                           ]
+                                        },
+                                        "url": {
+                                          "type": "string"
                                         }
                                       },
                                       "required": [
                                         "id",
-                                        "type"
+                                        "type",
+                                        "url"
                                       ]
                                     }
                                   }
-                                }
+                                },
+                                "required": [
+                                  "media_default",
+                                  "elements"
+                                ]
                               },
                               "vendor_id": {
                                 "type": "string"
@@ -1872,7 +2939,10 @@
                                 "type": "boolean"
                               },
                               "metadata": {
-                                "type": "object"
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
                               }
                             },
                             "required": [
@@ -1883,6 +2953,7 @@
                               "description_short",
                               "prices",
                               "tags",
+                              "media",
                               "active"
                             ]
                           },
@@ -1891,6 +2962,7 @@
                           }
                         },
                         "required": [
+                          "id",
                           "price",
                           "product",
                           "quantity"
@@ -1898,11 +2970,13 @@
                       }
                     },
                     "total": {
+                      "description": "total amout of cart items not including discounts",
                       "type": "string"
                     },
                     "metadata": {
                       "type": "object",
-                      "additionalProperties": true
+                      "additionalProperties": false,
+                      "properties": {}
                     }
                   },
                   "required": [
@@ -1918,7 +2992,7 @@
         }
       },
       "delete": {
-        "operationId": "cart/metadata",
+        "operationId": "cart/emptyCart",
         "tags": [
           "cart"
         ],
@@ -1948,21 +3022,17 @@
         "tags": [
           "cart"
         ],
-        "description": "\nAdd, remove, update lines from kirbic cart\n\nOperation modes:\n- `add` adds a price to the cart in specified `quantity`. \n    * If `price_id` is already in cart, `quantity` is added to actual value.\n    * If `price_id` is not already in cart `quantity` is setted.\n    * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`\n- `remove` removes a price from the cart in specified `quantity`.\n    * If `price` is already in cart, `quantity` is removed to actual value.\n    * If `price` is not already in cart `quantity` is setted.\n    * If total quantity of 0 is reached `price_id` is deleted from actual cart.\n    * Throws an error if total quantity is less than `rule:min_quantity_in_cart`\n- `set` sets the total quantity for this `price_id`. Creates it if not exists.\n- `delete` deletesthe `price_id` line from the cart. `quantity` is ignored\n",
+        "description": "TODO: Complete `kirbic-api` method docs",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
+                "description": "\nAdd, remove, update lines from kirbic cart.\n\nOperation modes:\n- `add` adds a price to the cart in specified `quantity`. \n    * If `price_id` is already in cart, `quantity` is added to actual value.\n    * If `price_id` is not already in cart `quantity` is setted.\n    * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`\n- `remove` removes a price from the cart in specified `quantity`.\n    * If `price` is already in cart, `quantity` is removed to actual value.\n    * If `price` is not already in cart `quantity` is setted.\n    * If total quantity of 0 is reached `price_id` is deleted from actual cart.\n    * Throws an error if total quantity is less than `rule:min_quantity_in_cart`\n- `set` sets the total quantity for this `price_id`. Creates it if not exists.\n- `delete` deletesthe `price_id` line from the cart. `quantity` is ignored\n",
                 "type": "object",
-                "$id": "todo.com",
-                "title": "Cart Line Action",
-                "description": "\nAdd, remove, update lines from kirbic cart\n\nOperation modes:\n- `add` adds a price to the cart in specified `quantity`. \n    * If `price_id` is already in cart, `quantity` is added to actual value.\n    * If `price_id` is not already in cart `quantity` is setted.\n    * Throws an error if total quantity exceeds `rule:max_quantity_in_cart`\n- `remove` removes a price from the cart in specified `quantity`.\n    * If `price` is already in cart, `quantity` is removed to actual value.\n    * If `price` is not already in cart `quantity` is setted.\n    * If total quantity of 0 is reached `price_id` is deleted from actual cart.\n    * Throws an error if total quantity is less than `rule:min_quantity_in_cart`\n- `set` sets the total quantity for this `price_id`. Creates it if not exists.\n- `delete` deletesthe `price_id` line from the cart. `quantity` is ignored\n",
                 "additionalProperties": false,
                 "properties": {
                   "quantity": {
                     "default": 1,
-                    "description": "quantity to add, or remove",
                     "type": "number"
                   }
                 }
@@ -1984,7 +3054,6 @@
             "name": "mode",
             "required": true,
             "schema": {
-              "description": "operation mode",
               "default": "add",
               "type": "string",
               "enum": [
@@ -2008,15 +3077,12 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "a cart in kirbic",
+            "description": "a kirbic cart",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "description": "a kirbic cart",
                   "type": "object",
-                  "$id": "todo.com",
-                  "title": "Cart",
-                  "description": "a cart in kirbic",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -2028,17 +3094,17 @@
                     "lines": {
                       "type": "array",
                       "items": {
+                        "description": "cart line",
                         "type": "object",
-                        "$id": "cart-line",
-                        "title": "Cart Line",
                         "additionalProperties": false,
-                        "description": "a cart line",
                         "properties": {
+                          "id": {
+                            "type": "string"
+                          },
                           "price": {
-                            "type": "object",
-                            "$id": "price",
                             "title": "Price",
-                            "description": "A price associated with a product",
+                            "description": "a price associated with a product",
+                            "type": "object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
@@ -2048,33 +3114,31 @@
                                 "type": "string"
                               },
                               "currency": {
+                                "title": "Currency",
+                                "description": "kirbic supported currencies",
+                                "default": "EUR",
                                 "type": "string",
                                 "enum": [
                                   "EUR",
                                   "USD"
-                                ],
-                                "default": "EUR",
-                                "title": "Currency",
-                                "$id": "currency",
-                                "description": "kirbic supported currencies"
+                                ]
                               },
                               "unit_type": {
+                                "title": "Unit",
+                                "description": "kirbic supported unit types",
+                                "default": "item",
+                                "type": "string",
                                 "enum": [
                                   "pallet",
                                   "box",
                                   "units",
                                   "item",
                                   "pack"
-                                ],
-                                "$id": "unit",
-                                "description": "kirbic supported unit types",
-                                "title": "Unit type",
-                                "type": "object",
-                                "additionalProperties": true
+                                ]
                               },
                               "unit_amount": {
-                                "type": "number",
-                                "minimum": 0
+                                "minimum": 0,
+                                "type": "number"
                               },
                               "active": {
                                 "type": "boolean"
@@ -2083,23 +3147,25 @@
                                 "type": "string"
                               },
                               "metadata": {
-                                "type": "object"
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {}
                               }
                             },
                             "required": [
                               "id",
                               "name",
                               "currency",
+                              "unit_type",
                               "unit_amount",
                               "active",
                               "product_id"
                             ]
                           },
                           "product": {
-                            "type": "object",
-                            "$id": "product",
                             "title": "product",
-                            "description": "A product",
+                            "description": "a product from the catalog",
+                            "type": "object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
@@ -2120,10 +3186,9 @@
                               "prices": {
                                 "type": "array",
                                 "items": {
-                                  "type": "object",
-                                  "$id": "price",
                                   "title": "Price",
-                                  "description": "A price associated with a product",
+                                  "description": "a price associated with a product",
+                                  "type": "object",
                                   "additionalProperties": false,
                                   "properties": {
                                     "id": {
@@ -2133,33 +3198,31 @@
                                       "type": "string"
                                     },
                                     "currency": {
+                                      "title": "Currency",
+                                      "description": "kirbic supported currencies",
+                                      "default": "EUR",
                                       "type": "string",
                                       "enum": [
                                         "EUR",
                                         "USD"
-                                      ],
-                                      "default": "EUR",
-                                      "title": "Currency",
-                                      "$id": "currency",
-                                      "description": "kirbic supported currencies"
+                                      ]
                                     },
                                     "unit_type": {
+                                      "title": "Unit",
+                                      "description": "kirbic supported unit types",
+                                      "default": "item",
+                                      "type": "string",
                                       "enum": [
                                         "pallet",
                                         "box",
                                         "units",
                                         "item",
                                         "pack"
-                                      ],
-                                      "$id": "unit",
-                                      "description": "kirbic supported unit types",
-                                      "title": "Unit type",
-                                      "type": "object",
-                                      "additionalProperties": true
+                                      ]
                                     },
                                     "unit_amount": {
-                                      "type": "number",
-                                      "minimum": 0
+                                      "minimum": 0,
+                                      "type": "number"
                                     },
                                     "active": {
                                       "type": "boolean"
@@ -2168,13 +3231,16 @@
                                       "type": "string"
                                     },
                                     "metadata": {
-                                      "type": "object"
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {}
                                     }
                                   },
                                   "required": [
                                     "id",
                                     "name",
                                     "currency",
+                                    "unit_type",
                                     "unit_amount",
                                     "active",
                                     "product_id"
@@ -2189,19 +3255,16 @@
                               },
                               "media": {
                                 "type": "object",
-                                "$id": "product_media",
-                                "title": "Product Media",
-                                "description": "product media",
                                 "additionalProperties": false,
                                 "properties": {
                                   "media_default": {
                                     "type": "object",
-                                    "$id": "media_object",
-                                    "title": "media object",
-                                    "description": "media object",
                                     "additionalProperties": false,
                                     "properties": {
                                       "id": {
+                                        "type": "string"
+                                      },
+                                      "product_id": {
                                         "type": "string"
                                       },
                                       "type": {
@@ -2211,23 +3274,27 @@
                                           "video",
                                           "file"
                                         ]
+                                      },
+                                      "url": {
+                                        "type": "string"
                                       }
                                     },
                                     "required": [
                                       "id",
-                                      "type"
+                                      "type",
+                                      "url"
                                     ]
                                   },
                                   "elements": {
                                     "type": "array",
                                     "items": {
                                       "type": "object",
-                                      "$id": "media_object",
-                                      "title": "media object",
-                                      "description": "media object",
                                       "additionalProperties": false,
                                       "properties": {
                                         "id": {
+                                          "type": "string"
+                                        },
+                                        "product_id": {
                                           "type": "string"
                                         },
                                         "type": {
@@ -2237,15 +3304,23 @@
                                             "video",
                                             "file"
                                           ]
+                                        },
+                                        "url": {
+                                          "type": "string"
                                         }
                                       },
                                       "required": [
                                         "id",
-                                        "type"
+                                        "type",
+                                        "url"
                                       ]
                                     }
                                   }
-                                }
+                                },
+                                "required": [
+                                  "media_default",
+                                  "elements"
+                                ]
                               },
                               "vendor_id": {
                                 "type": "string"
@@ -2254,7 +3329,10 @@
                                 "type": "boolean"
                               },
                               "metadata": {
-                                "type": "object"
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
                               }
                             },
                             "required": [
@@ -2265,6 +3343,7 @@
                               "description_short",
                               "prices",
                               "tags",
+                              "media",
                               "active"
                             ]
                           },
@@ -2273,6 +3352,7 @@
                           }
                         },
                         "required": [
+                          "id",
                           "price",
                           "product",
                           "quantity"
@@ -2280,11 +3360,13 @@
                       }
                     },
                     "total": {
+                      "description": "total amout of cart items not including discounts",
                       "type": "string"
                     },
                     "metadata": {
                       "type": "object",
-                      "additionalProperties": true
+                      "additionalProperties": false,
+                      "properties": {}
                     }
                   },
                   "required": [
@@ -2302,7 +3384,7 @@
     },
     "/cart/metadata": {
       "post": {
-        "operationId": "cart/metadata",
+        "operationId": "cart/setCartMetadata",
         "tags": [
           "cart"
         ],
@@ -2321,15 +3403,12 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "a cart in kirbic",
+            "description": "a kirbic cart",
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "description": "a kirbic cart",
                   "type": "object",
-                  "$id": "todo.com",
-                  "title": "Cart",
-                  "description": "a cart in kirbic",
                   "additionalProperties": false,
                   "properties": {
                     "id": {
@@ -2341,17 +3420,17 @@
                     "lines": {
                       "type": "array",
                       "items": {
+                        "description": "cart line",
                         "type": "object",
-                        "$id": "cart-line",
-                        "title": "Cart Line",
                         "additionalProperties": false,
-                        "description": "a cart line",
                         "properties": {
+                          "id": {
+                            "type": "string"
+                          },
                           "price": {
-                            "type": "object",
-                            "$id": "price",
                             "title": "Price",
-                            "description": "A price associated with a product",
+                            "description": "a price associated with a product",
+                            "type": "object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
@@ -2361,33 +3440,31 @@
                                 "type": "string"
                               },
                               "currency": {
+                                "title": "Currency",
+                                "description": "kirbic supported currencies",
+                                "default": "EUR",
                                 "type": "string",
                                 "enum": [
                                   "EUR",
                                   "USD"
-                                ],
-                                "default": "EUR",
-                                "title": "Currency",
-                                "$id": "currency",
-                                "description": "kirbic supported currencies"
+                                ]
                               },
                               "unit_type": {
+                                "title": "Unit",
+                                "description": "kirbic supported unit types",
+                                "default": "item",
+                                "type": "string",
                                 "enum": [
                                   "pallet",
                                   "box",
                                   "units",
                                   "item",
                                   "pack"
-                                ],
-                                "$id": "unit",
-                                "description": "kirbic supported unit types",
-                                "title": "Unit type",
-                                "type": "object",
-                                "additionalProperties": true
+                                ]
                               },
                               "unit_amount": {
-                                "type": "number",
-                                "minimum": 0
+                                "minimum": 0,
+                                "type": "number"
                               },
                               "active": {
                                 "type": "boolean"
@@ -2396,23 +3473,25 @@
                                 "type": "string"
                               },
                               "metadata": {
-                                "type": "object"
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {}
                               }
                             },
                             "required": [
                               "id",
                               "name",
                               "currency",
+                              "unit_type",
                               "unit_amount",
                               "active",
                               "product_id"
                             ]
                           },
                           "product": {
-                            "type": "object",
-                            "$id": "product",
                             "title": "product",
-                            "description": "A product",
+                            "description": "a product from the catalog",
+                            "type": "object",
                             "additionalProperties": false,
                             "properties": {
                               "id": {
@@ -2433,10 +3512,9 @@
                               "prices": {
                                 "type": "array",
                                 "items": {
-                                  "type": "object",
-                                  "$id": "price",
                                   "title": "Price",
-                                  "description": "A price associated with a product",
+                                  "description": "a price associated with a product",
+                                  "type": "object",
                                   "additionalProperties": false,
                                   "properties": {
                                     "id": {
@@ -2446,33 +3524,31 @@
                                       "type": "string"
                                     },
                                     "currency": {
+                                      "title": "Currency",
+                                      "description": "kirbic supported currencies",
+                                      "default": "EUR",
                                       "type": "string",
                                       "enum": [
                                         "EUR",
                                         "USD"
-                                      ],
-                                      "default": "EUR",
-                                      "title": "Currency",
-                                      "$id": "currency",
-                                      "description": "kirbic supported currencies"
+                                      ]
                                     },
                                     "unit_type": {
+                                      "title": "Unit",
+                                      "description": "kirbic supported unit types",
+                                      "default": "item",
+                                      "type": "string",
                                       "enum": [
                                         "pallet",
                                         "box",
                                         "units",
                                         "item",
                                         "pack"
-                                      ],
-                                      "$id": "unit",
-                                      "description": "kirbic supported unit types",
-                                      "title": "Unit type",
-                                      "type": "object",
-                                      "additionalProperties": true
+                                      ]
                                     },
                                     "unit_amount": {
-                                      "type": "number",
-                                      "minimum": 0
+                                      "minimum": 0,
+                                      "type": "number"
                                     },
                                     "active": {
                                       "type": "boolean"
@@ -2481,13 +3557,16 @@
                                       "type": "string"
                                     },
                                     "metadata": {
-                                      "type": "object"
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {}
                                     }
                                   },
                                   "required": [
                                     "id",
                                     "name",
                                     "currency",
+                                    "unit_type",
                                     "unit_amount",
                                     "active",
                                     "product_id"
@@ -2502,19 +3581,16 @@
                               },
                               "media": {
                                 "type": "object",
-                                "$id": "product_media",
-                                "title": "Product Media",
-                                "description": "product media",
                                 "additionalProperties": false,
                                 "properties": {
                                   "media_default": {
                                     "type": "object",
-                                    "$id": "media_object",
-                                    "title": "media object",
-                                    "description": "media object",
                                     "additionalProperties": false,
                                     "properties": {
                                       "id": {
+                                        "type": "string"
+                                      },
+                                      "product_id": {
                                         "type": "string"
                                       },
                                       "type": {
@@ -2524,23 +3600,27 @@
                                           "video",
                                           "file"
                                         ]
+                                      },
+                                      "url": {
+                                        "type": "string"
                                       }
                                     },
                                     "required": [
                                       "id",
-                                      "type"
+                                      "type",
+                                      "url"
                                     ]
                                   },
                                   "elements": {
                                     "type": "array",
                                     "items": {
                                       "type": "object",
-                                      "$id": "media_object",
-                                      "title": "media object",
-                                      "description": "media object",
                                       "additionalProperties": false,
                                       "properties": {
                                         "id": {
+                                          "type": "string"
+                                        },
+                                        "product_id": {
                                           "type": "string"
                                         },
                                         "type": {
@@ -2550,15 +3630,23 @@
                                             "video",
                                             "file"
                                           ]
+                                        },
+                                        "url": {
+                                          "type": "string"
                                         }
                                       },
                                       "required": [
                                         "id",
-                                        "type"
+                                        "type",
+                                        "url"
                                       ]
                                     }
                                   }
-                                }
+                                },
+                                "required": [
+                                  "media_default",
+                                  "elements"
+                                ]
                               },
                               "vendor_id": {
                                 "type": "string"
@@ -2567,7 +3655,10 @@
                                 "type": "boolean"
                               },
                               "metadata": {
-                                "type": "object"
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
                               }
                             },
                             "required": [
@@ -2578,6 +3669,7 @@
                               "description_short",
                               "prices",
                               "tags",
+                              "media",
                               "active"
                             ]
                           },
@@ -2586,6 +3678,7 @@
                           }
                         },
                         "required": [
+                          "id",
                           "price",
                           "product",
                           "quantity"
@@ -2593,11 +3686,13 @@
                       }
                     },
                     "total": {
+                      "description": "total amout of cart items not including discounts",
                       "type": "string"
                     },
                     "metadata": {
                       "type": "object",
-                      "additionalProperties": true
+                      "additionalProperties": false,
+                      "properties": {}
                     }
                   },
                   "required": [
@@ -2646,6 +3741,54 @@
           "order"
         ],
         "description": "Create an order. Only owner users can call this method, others should use payment paywall",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Create an order",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "billable": {
+                    "default": false,
+                    "description": "if you want an invoice for this order, it will use default billing address or throw an error if no defautl billing address is set",
+                    "type": "boolean"
+                  },
+                  "delivery_address": {
+                    "description": "Where to deliver the order, it is automatically set to user default delivery address if any item in the order requires delivery",
+                    "type": "string"
+                  },
+                  "intent_payment_method": {
+                    "description": "kirbic supported payment methods",
+                    "type": "string",
+                    "enum": [
+                      "manual",
+                      "bank-transfer",
+                      "stripe"
+                    ]
+                  },
+                  "intent_delivery_method": {
+                    "description": "kirbic supported delivery methods",
+                    "default": "manual",
+                    "type": "string",
+                    "enum": [
+                      "manual"
+                    ]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {}
+                  }
+                },
+                "required": [
+                  "intent_payment_method",
+                  "intent_delivery_method"
+                ]
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "in": "header",
@@ -2660,7 +3803,448 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "Default Response"
+            "description": "kirbic order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "kirbic order",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "string"
+                    },
+                    "cart": {
+                      "description": "a kirbic cart",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "shop_id": {
+                          "type": "string"
+                        },
+                        "lines": {
+                          "type": "array",
+                          "items": {
+                            "description": "cart line",
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "price": {
+                                "title": "Price",
+                                "description": "a price associated with a product",
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "currency": {
+                                    "title": "Currency",
+                                    "description": "kirbic supported currencies",
+                                    "default": "EUR",
+                                    "type": "string",
+                                    "enum": [
+                                      "EUR",
+                                      "USD"
+                                    ]
+                                  },
+                                  "unit_type": {
+                                    "title": "Unit",
+                                    "description": "kirbic supported unit types",
+                                    "default": "item",
+                                    "type": "string",
+                                    "enum": [
+                                      "pallet",
+                                      "box",
+                                      "units",
+                                      "item",
+                                      "pack"
+                                    ]
+                                  },
+                                  "unit_amount": {
+                                    "minimum": 0,
+                                    "type": "number"
+                                  },
+                                  "active": {
+                                    "type": "boolean"
+                                  },
+                                  "product_id": {
+                                    "type": "string"
+                                  },
+                                  "metadata": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {}
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "currency",
+                                  "unit_type",
+                                  "unit_amount",
+                                  "active",
+                                  "product_id"
+                                ]
+                              },
+                              "product": {
+                                "title": "product",
+                                "description": "a product from the catalog",
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "description": {
+                                    "type": "string"
+                                  },
+                                  "description_short": {
+                                    "type": "string"
+                                  },
+                                  "prices": {
+                                    "type": "array",
+                                    "items": {
+                                      "title": "Price",
+                                      "description": "a price associated with a product",
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "currency": {
+                                          "title": "Currency",
+                                          "description": "kirbic supported currencies",
+                                          "default": "EUR",
+                                          "type": "string",
+                                          "enum": [
+                                            "EUR",
+                                            "USD"
+                                          ]
+                                        },
+                                        "unit_type": {
+                                          "title": "Unit",
+                                          "description": "kirbic supported unit types",
+                                          "default": "item",
+                                          "type": "string",
+                                          "enum": [
+                                            "pallet",
+                                            "box",
+                                            "units",
+                                            "item",
+                                            "pack"
+                                          ]
+                                        },
+                                        "unit_amount": {
+                                          "minimum": 0,
+                                          "type": "number"
+                                        },
+                                        "active": {
+                                          "type": "boolean"
+                                        },
+                                        "product_id": {
+                                          "type": "string"
+                                        },
+                                        "metadata": {
+                                          "type": "object",
+                                          "additionalProperties": false,
+                                          "properties": {}
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "name",
+                                        "currency",
+                                        "unit_type",
+                                        "unit_amount",
+                                        "active",
+                                        "product_id"
+                                      ]
+                                    }
+                                  },
+                                  "tags": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "media": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "media_default": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                          "id": {
+                                            "type": "string"
+                                          },
+                                          "product_id": {
+                                            "type": "string"
+                                          },
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "image",
+                                              "video",
+                                              "file"
+                                            ]
+                                          },
+                                          "url": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "type",
+                                          "url"
+                                        ]
+                                      },
+                                      "elements": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "additionalProperties": false,
+                                          "properties": {
+                                            "id": {
+                                              "type": "string"
+                                            },
+                                            "product_id": {
+                                              "type": "string"
+                                            },
+                                            "type": {
+                                              "type": "string",
+                                              "enum": [
+                                                "image",
+                                                "video",
+                                                "file"
+                                              ]
+                                            },
+                                            "url": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": [
+                                            "id",
+                                            "type",
+                                            "url"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "media_default",
+                                      "elements"
+                                    ]
+                                  },
+                                  "vendor_id": {
+                                    "type": "string"
+                                  },
+                                  "active": {
+                                    "type": "boolean"
+                                  },
+                                  "metadata": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "slug",
+                                  "description",
+                                  "description_short",
+                                  "prices",
+                                  "tags",
+                                  "media",
+                                  "active"
+                                ]
+                              },
+                              "quantity": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "price",
+                              "product",
+                              "quantity"
+                            ]
+                          }
+                        },
+                        "total": {
+                          "description": "total amout of cart items not including discounts",
+                          "type": "string"
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {}
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "shop_id",
+                        "lines",
+                        "total"
+                      ]
+                    },
+                    "delivery_address": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "description": "identificador de dirección",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "a que nombre entregamos el paquete",
+                          "type": "string"
+                        },
+                        "line_1": {
+                          "description": "primera linea de la dirección",
+                          "type": "string"
+                        },
+                        "line_2": {
+                          "description": "segunda linea de la dirección",
+                          "type": "string"
+                        },
+                        "city": {
+                          "description": "ciudad",
+                          "type": "string"
+                        },
+                        "state": {
+                          "description": "provincia o región",
+                          "type": "string"
+                        },
+                        "zip_code": {
+                          "description": "código postal",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "el teléfono se puede usar para ayudar con la entrega",
+                          "type": "string"
+                        },
+                        "delivery_instructions": {
+                          "description": "detalles para ayudar con la entrega",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "line_1",
+                        "city",
+                        "state",
+                        "zip_code"
+                      ]
+                    },
+                    "billing_address": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "description": "identificador de dirección",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "a que nombre entregamos el paquete",
+                          "type": "string"
+                        },
+                        "line_1": {
+                          "description": "primera linea de la dirección",
+                          "type": "string"
+                        },
+                        "line_2": {
+                          "description": "segunda linea de la dirección",
+                          "type": "string"
+                        },
+                        "city": {
+                          "description": "ciudad",
+                          "type": "string"
+                        },
+                        "state": {
+                          "description": "provincia o región",
+                          "type": "string"
+                        },
+                        "zip_code": {
+                          "description": "código postal",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "el teléfono se puede usar para ayudar con la entrega",
+                          "type": "string"
+                        },
+                        "delivery_instructions": {
+                          "description": "detalles para ayudar con la entrega",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "line_1",
+                        "city",
+                        "state",
+                        "zip_code"
+                      ]
+                    },
+                    "payment_status": {
+                      "description": "order payment fulfill status",
+                      "type": "string",
+                      "enum": [
+                        "no_payment",
+                        "pending",
+                        "partial",
+                        "paid",
+                        "refund"
+                      ]
+                    },
+                    "delivery_status": {
+                      "description": "order delivery fulfill status",
+                      "type": "string",
+                      "enum": [
+                        "no_payment",
+                        "pending",
+                        "partial",
+                        "paid"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "user_id",
+                    "cart",
+                    "payment_status",
+                    "delivery_status"
+                  ]
+                }
+              }
+            }
           }
         }
       },
@@ -2754,474 +4338,6 @@
             "name": "x-shopcopter-shop",
             "required": false,
             "description": "Kirbic shop identifier",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
-    "/helpdesk/": {
-      "post": {
-        "operationId": "helpdesk/create",
-        "summary": "Create a helpdesk event",
-        "tags": [
-          "helpdesk"
-        ],
-        "description": "Create a helpdesk event",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
-                "type": "object",
-                "$id": "todo.com",
-                "title": "Helpdesk Create",
-                "description": "create a helpdesk ticket",
-                "additionalProperties": false,
-                "properties": {
-                  "desk_type": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "description": "Some sort of user identifer",
-                    "type": "string"
-                  },
-                  "email": {
-                    "description": "user email",
-                    "type": "string"
-                  },
-                  "fields": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "$id": "helpdesk_field",
-                      "title": "helpdesk field",
-                      "description": "helpdesk field",
-                      "additionalProperties": false,
-                      "properties": {
-                        "label": {
-                          "type": "string"
-                        },
-                        "type": {
-                          "type": "string"
-                        },
-                        "value": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "label",
-                        "type",
-                        "value"
-                      ]
-                    }
-                  }
-                },
-                "required": [
-                  "desk_type",
-                  "name",
-                  "email",
-                  "fields"
-                ]
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-shopcopter-shop",
-            "required": false,
-            "description": "Kirbic shop identifier",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "security": [],
-        "responses": {
-          "201": {
-            "description": "Helpdesk ticket created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "description": "Helpdesk ticket created",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/address/": {
-      "get": {
-        "operationId": "address/getAllAddresses",
-        "tags": [
-          "address"
-        ],
-        "description": "Get all user saved addresses ",
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "post": {
-        "operationId": "address/getAllAddresses",
-        "tags": [
-          "address"
-        ],
-        "description": "Create an address for the current user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
-                "type": "object",
-                "additionalProperties": false,
-                "$id": "todo.com",
-                "title": "Address create",
-                "description": "create an address",
-                "properties": {
-                  "name": {
-                    "description": "a que nombre entregamos el paquete",
-                    "type": "string"
-                  },
-                  "line_1": {
-                    "description": "primera linea de la dirección",
-                    "type": "string"
-                  },
-                  "line_2": {
-                    "description": "segunda linea de la dirección",
-                    "type": "string"
-                  },
-                  "city": {
-                    "description": "ciudad",
-                    "type": "string"
-                  },
-                  "state": {
-                    "description": "província o región",
-                    "type": "string"
-                  },
-                  "zip_code": {
-                    "description": "código postal",
-                    "type": "string"
-                  },
-                  "phone_number": {
-                    "description": "el teléfono se puede usar para ayudar con la entrega",
-                    "type": "string"
-                  },
-                  "delivery_instructions": {
-                    "description": "detalles para ayudar con la entrega",
-                    "type": "string"
-                  },
-                  "default_billing": {
-                    "description": "establecer como dirección de envio por defecto",
-                    "type": "boolean"
-                  },
-                  "default_delivery": {
-                    "description": "dirección de envio por defecto",
-                    "type": "boolean"
-                  }
-                },
-                "required": [
-                  "name",
-                  "line_1",
-                  "city",
-                  "state",
-                  "zip_code"
-                ]
-              }
-            }
-          }
-        },
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "address response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "definitions": {
-                    "address": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "$id": "address",
-                      "title": "address",
-                      "description": "an address",
-                      "properties": {
-                        "name": {
-                          "description": "a que nombre entregamos el paquete",
-                          "type": "string"
-                        },
-                        "line_1": {
-                          "description": "primera linea de la dirección",
-                          "type": "string"
-                        },
-                        "line_2": {
-                          "description": "segunda linea de la dirección",
-                          "type": "string"
-                        },
-                        "city": {
-                          "description": "ciudad",
-                          "type": "string"
-                        },
-                        "state": {
-                          "description": "província o región",
-                          "type": "string"
-                        },
-                        "zip_code": {
-                          "description": "código postal",
-                          "type": "string"
-                        },
-                        "phone_number": {
-                          "description": "el teléfono se puede usar para ayudar con la entrega",
-                          "type": "string"
-                        },
-                        "delivery_instructions": {
-                          "description": "detalles para ayudar con la entrega",
-                          "type": "string"
-                        },
-                        "id": {
-                          "description": "identificador",
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "name",
-                        "line_1",
-                        "city",
-                        "state",
-                        "zip_code",
-                        "id"
-                      ]
-                    }
-                  },
-                  "type": "object",
-                  "$id": "todo.com",
-                  "title": "address response",
-                  "description": "address response",
-                  "additionalProperties": false,
-                  "properties": {
-                    "addresses": {
-                      "description": "direcciones del usuario",
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "$id": "address",
-                        "title": "address",
-                        "description": "an address",
-                        "properties": {
-                          "name": {
-                            "description": "a que nombre entregamos el paquete",
-                            "type": "string"
-                          },
-                          "line_1": {
-                            "description": "primera linea de la dirección",
-                            "type": "string"
-                          },
-                          "line_2": {
-                            "description": "segunda linea de la dirección",
-                            "type": "string"
-                          },
-                          "city": {
-                            "description": "ciudad",
-                            "type": "string"
-                          },
-                          "state": {
-                            "description": "província o región",
-                            "type": "string"
-                          },
-                          "zip_code": {
-                            "description": "código postal",
-                            "type": "string"
-                          },
-                          "phone_number": {
-                            "description": "el teléfono se puede usar para ayudar con la entrega",
-                            "type": "string"
-                          },
-                          "delivery_instructions": {
-                            "description": "detalles para ayudar con la entrega",
-                            "type": "string"
-                          },
-                          "id": {
-                            "description": "identificador",
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "name",
-                          "line_1",
-                          "city",
-                          "state",
-                          "zip_code",
-                          "id"
-                        ]
-                      }
-                    },
-                    "default_billing": {
-                      "description": "dirección de facturación por defecto",
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "$id": "address",
-                          "title": "address",
-                          "description": "an address",
-                          "properties": {
-                            "name": {
-                              "description": "a que nombre entregamos el paquete",
-                              "type": "string"
-                            },
-                            "line_1": {
-                              "description": "primera linea de la dirección",
-                              "type": "string"
-                            },
-                            "line_2": {
-                              "description": "segunda linea de la dirección",
-                              "type": "string"
-                            },
-                            "city": {
-                              "description": "ciudad",
-                              "type": "string"
-                            },
-                            "state": {
-                              "description": "província o región",
-                              "type": "string"
-                            },
-                            "zip_code": {
-                              "description": "código postal",
-                              "type": "string"
-                            },
-                            "phone_number": {
-                              "description": "el teléfono se puede usar para ayudar con la entrega",
-                              "type": "string"
-                            },
-                            "delivery_instructions": {
-                              "description": "detalles para ayudar con la entrega",
-                              "type": "string"
-                            },
-                            "id": {
-                              "description": "identificador",
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "name",
-                            "line_1",
-                            "city",
-                            "state",
-                            "zip_code",
-                            "id"
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "default_delivery": {
-                      "description": "dirección de envio por defecto",
-                      "oneOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "$id": "address",
-                          "title": "address",
-                          "description": "an address",
-                          "properties": {
-                            "name": {
-                              "description": "a que nombre entregamos el paquete",
-                              "type": "string"
-                            },
-                            "line_1": {
-                              "description": "primera linea de la dirección",
-                              "type": "string"
-                            },
-                            "line_2": {
-                              "description": "segunda linea de la dirección",
-                              "type": "string"
-                            },
-                            "city": {
-                              "description": "ciudad",
-                              "type": "string"
-                            },
-                            "state": {
-                              "description": "província o región",
-                              "type": "string"
-                            },
-                            "zip_code": {
-                              "description": "código postal",
-                              "type": "string"
-                            },
-                            "phone_number": {
-                              "description": "el teléfono se puede usar para ayudar con la entrega",
-                              "type": "string"
-                            },
-                            "delivery_instructions": {
-                              "description": "detalles para ayudar con la entrega",
-                              "type": "string"
-                            },
-                            "id": {
-                              "description": "identificador",
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "name",
-                            "line_1",
-                            "city",
-                            "state",
-                            "zip_code",
-                            "id"
-                          ]
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    }
-                  },
-                  "required": [
-                    "addresses",
-                    "default_billing",
-                    "default_delivery"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/address/{address_id}": {
-      "delete": {
-        "operationId": "address/delete",
-        "tags": [
-          "address"
-        ],
-        "description": "Delete a user address",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "address_id",
-            "required": true,
             "schema": {
               "type": "string"
             }
